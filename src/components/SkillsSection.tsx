@@ -1,86 +1,46 @@
-"use client";
+import React from 'react';
+import { SKILL_GROUPS } from '@/data/portfolioData';
 
-import React, { useState } from "react";
-import { SkillCategory } from "@/types";
-import { Cpu, Layers, Terminal, Database, Cloud, Shield, Sparkles } from "lucide-react";
-
-interface SkillsSectionProps {
-  skillCategories: SkillCategory[];
-}
-
-export function SkillsSection({ skillCategories }: SkillsSectionProps) {
-  const [activeTab, setActiveTab] = useState<number>(0);
-
-  const icons = [Layers, Terminal, Database, Sparkles, Cloud];
-
+export function SkillsSection() {
   return (
-    <section id="skills" className="py-24 relative bg-background border-t border-surface-border mesh-bg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-secondary/15 border border-brand-secondary/30 text-purple-300 text-xs font-mono font-semibold mb-3">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>Technical Mastery</span>
+    <section id="skills" className="py-28 sm:py-36 px-6 sm:px-8 max-w-6xl mx-auto border-t border-border">
+      <span className="text-xs uppercase tracking-widest text-text-muted font-mono mb-8 block">
+        skills
+      </span>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+        {/* Left Column: Generous whitespace reserved for the 3D canvas */}
+        <div className="hidden lg:flex lg:col-span-5 flex-col justify-between min-h-[360px] pr-8">
+          <div>
+            <h2 className="font-heading text-3xl sm:text-4xl font-normal tracking-tight text-text">
+              Technical capability.
+            </h2>
+            <p className="mt-4 text-text-muted font-light text-sm leading-relaxed max-w-sm">
+              From responsive frontend components and state models to backend REST APIs and relational database query tuning.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-4">
-            Skills & Architecture Matrix
-          </h2>
-          <p className="text-slate-400 text-base">
-            Deep hands-on proficiency across modern frontend engineering, distributed backend systems, AI agents, and cloud infrastructure.
-          </p>
+          <div className="text-xs font-mono text-text-muted/60">
+            [3d interactive core]
+          </div>
         </div>
 
-        {/* Tab Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 mb-12">
-          {skillCategories.map((cat, idx) => {
-            const Icon = icons[idx % icons.length];
-            return (
-              <button
-                key={cat.category}
-                onClick={() => setActiveTab(idx)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                  activeTab === idx
-                    ? "bg-gradient-to-r from-brand-primary to-brand-secondary text-white shadow-glow"
-                    : "bg-surface-100 text-slate-400 hover:text-white hover:bg-surface-50 border border-surface-border"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{cat.category}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Active Skills Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
-          {skillCategories[activeTab]?.skills.map((skill, idx) => (
-            <div
-              key={idx}
-              className="glass-card rounded-2xl p-6 border border-surface-border relative group hover:border-brand-primary/50"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2.5 font-bold text-white text-base">
-                  <div className="w-2.5 h-2.5 rounded-full bg-brand-cyan" />
-                  <span>{skill.name}</span>
-                </div>
-                <span className="text-xs font-mono font-bold text-brand-cyan">
-                  {skill.level}%
-                </span>
-              </div>
-
-              {/* Progress bar */}
-              <div className="w-full h-2 rounded-full bg-surface-300 overflow-hidden mb-3">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-brand-primary to-brand-cyan transition-all duration-1000 ease-out"
-                  style={{ width: `${skill.level}%` }}
-                />
-              </div>
-
-              {skill.highlight && (
-                <span className="inline-block text-[11px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded">
-                  Core Specialization
-                </span>
-              )}
+        {/* Right Column: 4 skill groups */}
+        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-10 lg:pl-8">
+          {SKILL_GROUPS.map((group) => (
+            <div key={group.name} className="space-y-4">
+              <h3 className="font-heading text-lg font-medium text-text border-b border-border pb-2">
+                {group.name}
+              </h3>
+              <ul className="space-y-2 text-sm text-text-muted">
+                {group.items.map((skill) => (
+                  <li 
+                    key={skill}
+                    className="hover:text-accent hover:translate-x-1 transition-all duration-200 cursor-default"
+                  >
+                    {skill}
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
