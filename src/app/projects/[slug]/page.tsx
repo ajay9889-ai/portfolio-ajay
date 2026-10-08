@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight, ArrowRight } from 'lucide-react';
 import { PROJECTS } from '@/data/portfolioData';
+import { ProjectReactions } from '@/components/ProjectReactions';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
@@ -86,6 +87,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                 <span className="text-muted">—</span>
               )}
             </div>
+          </div>
+
+          {/* Project Reactions Bar */}
+          <div className="pt-6 flex items-center gap-4">
+            <span className="text-xs font-mono text-muted">React to this project:</span>
+            <ProjectReactions slug={project.slug} />
           </div>
         </div>
 
