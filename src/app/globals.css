@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default dark theme tokens - strictly 3 colors: background, text (+muted), accent */
+  --color-bg: #0E0E12;
+  --color-text: #ECEBE7;
+  --color-text-muted: #8B8B95;
+  --color-accent: #8B7CFF;
+  --color-accent-glow: rgba(139, 124, 255, 0.25);
+  --color-border: rgba(236, 235, 231, 0.08);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg: #F5F4F0;
+    --color-text: #121216;
+    --color-text-muted: #6F6E79;
+    --color-accent: #7866FF;
+    --color-accent-glow: rgba(120, 102, 255, 0.2);
+    --color-border: rgba(18, 18, 22, 0.08);
+  }
+}
+
+[data-theme="light"] {
+  --color-bg: #F5F4F0;
+  --color-text: #121216;
+  --color-text-muted: #6F6E79;
+  --color-accent: #7866FF;
+  --color-accent-glow: rgba(120, 102, 255, 0.2);
+  --color-border: rgba(18, 18, 22, 0.08);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0E0E12;
+  --color-text: #ECEBE7;
+  --color-text-muted: #8B8B95;
+  --color-accent: #8B7CFF;
+  --color-accent-glow: rgba(139, 124, 255, 0.25);
+  --color-border: rgba(236, 235, 231, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Subtle accent focus states */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Accent selection tint */
+::selection {
+  background-color: var(--color-accent);
+  color: #0E0E12;
+}
+
+/* Lenis smooth scroll */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
