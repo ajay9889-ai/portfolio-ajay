@@ -1,51 +1,127 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
 import { PROFILE } from '@/data/portfolioData';
 
 export function HeroSection() {
+  const letters = ['A', 'j', 'a', 'y', ' ', 'A'];
+  const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [weights, setWeights] = useState<number[]>([700, 700, 700, 700, 400, 700]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let animId: number;
+    let isIdle = true;
+    let idleTimer: NodeJS.Timeout;
+
+    const onMouseMove = (e: MouseEvent) => {
+      isIdle = false;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        isIdle = true;
+      }, 2500);
+
+      letterRefs.current.forEach((el, index) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const letterCenterX = rect.left + rect.width / 2;
+        const letterCenterY = rect.top + rect.height / 2;
+        const dist = Math.hypot(e.clientX - letterCenterX, e.clientY - letterCenterY);
+
+        // Distance mapped to font weight 400 - 800
+        const maxDist = 300;
+        const normalized = Math.max(0, 1 - dist / maxDist);
+        const targetWeight = Math.round(400 + normalized * 400);
+
+        setWeights((prev) => {
+          const next = [...prev];
+          next[index] = targetWeight;
+          return next;
+        });
+      });
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+
+    // Sine-wave ripple when idle or on mobile
+    let phase = 0;
+    const rippleLoop = () => {
+      if (isIdle) {
+        phase += 0.05;
+        setWeights(
+          letters.map((_, i) => {
+            const w = 550 + Math.sin(phase + i * 0.8) * 200;
+            return Math.round(Math.min(800, Math.max(400, w)));
+          })
+        );
+      }
+      animId = requestAnimationFrame(rippleLoop);
+    };
+
+    animId = requestAnimationFrame(rippleLoop);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      cancelAnimationFrame(animId);
+      clearTimeout(idleTimer);
+    };
+  }, []);
+
   return (
-    <section className="relative min-h-[85vh] flex flex-col justify-between pt-24 pb-16 px-6 sm:px-8 max-w-6xl mx-auto">
-      <div className="max-w-4xl pt-8 sm:pt-16">
-        <div className="overflow-hidden mb-6">
-          <h1 className="font-heading text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-medium tracking-tighter text-text leading-[0.95]">
-            Full-stack
-            <br />
-            developer.
+    <section className="relative min-h-[90vh] flex flex-col justify-between pt-16 pb-12 px-6 sm:px-10 max-w-7xl mx-auto">
+      <div className="pt-8 sm:pt-16">
+        {/* Giant Hero Name: ~20vw with interactive font weights */}
+        <div ref={containerRef} className="overflow-visible select-none py-4">
+          <h1 className="font-display text-[17vw] sm:text-[19vw] leading-[0.88] tracking-[-0.04em] text-ink flex items-baseline">
+            {letters.map((char, idx) => (
+              <span
+                key={idx}
+                ref={(el) => { letterRefs.current[idx] = el; }}
+                style={{ fontWeight: weights[idx] || 700 }}
+                className="transition-[font-weight] duration-75 inline-block"
+              >
+                {char === ' ' ? ' ' : char}
+              </span>
+            ))}
           </h1>
         </div>
 
-        <p className="text-lg sm:text-2xl text-text-muted font-light max-w-2xl leading-relaxed mt-8">
-          {PROFILE.subtext}
-        </p>
+        {/* Tagline & Call-to-actions */}
+        <div className="mt-8 sm:mt-12 max-w-2xl">
+          <p className="text-xl sm:text-2xl text-muted font-normal leading-snug">
+            {PROFILE.subtext}
+          </p>
 
-        <div className="mt-10 flex items-center gap-6">
-          <Link
-            href="#work"
-            className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-border text-text hover:border-accent hover:text-accent text-sm transition-colors duration-200"
-          >
-            view selected work
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm text-text-muted hover:text-accent transition-colors"
-          >
-            get in touch →
-          </Link>
+          <div className="mt-8 flex items-center gap-6">
+            <Link
+              href="#contact"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-accent text-white font-medium text-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
+            >
+              Let's talk
+            </Link>
+            <Link
+              href="#work"
+              className="text-sm font-medium text-muted hover:text-ink transition-colors"
+            >
+              view selected work →
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div className="pt-16 flex items-center justify-between text-xs text-text-muted font-mono">
+      <div className="pt-16 flex items-center justify-between text-xs text-muted font-mono hairline-t">
         <span className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-accent inline-block animate-pulse" />
-          Bengaluru, India (UTC+05:30)
+          Bengaluru, India
         </span>
 
         <Link
           href="#about"
           className="flex items-center gap-2 hover:text-accent transition-colors"
         >
-          <span>scroll</span>
+          <span>scroll to explore</span>
           <ArrowDown className="w-3.5 h-3.5" />
         </Link>
       </div>

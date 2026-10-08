@@ -25,15 +25,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const nextProject = PROJECTS[(currentIndex + 1) % PROJECTS.length];
 
   return (
-    <div className="min-h-screen bg-bg text-text selection:bg-accent selection:text-bg">
+    <div className="min-h-screen bg-bg text-ink selection:bg-accent selection:text-white transition-colors duration-500">
       <Navbar />
 
-      <main className="max-w-5xl mx-auto px-6 sm:px-8 pt-12 pb-24">
+      <main className="max-w-6xl mx-auto px-6 sm:px-10 pt-12 pb-24">
         {/* Back navigation */}
         <div className="mb-12">
           <Link
             href="/#work"
-            className="inline-flex items-center gap-2 text-xs font-mono text-text-muted hover:text-accent transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-mono text-muted hover:text-accent transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>back to selected work</span>
@@ -41,64 +41,64 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         </div>
 
         {/* Hero header */}
-        <div className="space-y-6 pb-16 border-b border-border">
+        <div className="space-y-6 pb-16 hairline-b">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-medium tracking-tight text-text">
+            <h1 className="font-display text-4xl sm:text-7xl font-bold tracking-[-0.04em] text-ink">
               {project.title}
             </h1>
             {project.badge && (
-              <span className="px-3 py-1 text-xs font-mono rounded-full border border-accent/40 text-accent bg-accent/5">
+              <span className="px-3 py-1 text-xs font-mono rounded-full border border-accent/40 text-accent">
                 {project.badge}
               </span>
             )}
           </div>
 
-          <p className="text-xl sm:text-2xl text-text-muted font-light max-w-3xl leading-relaxed">
+          <p className="text-xl sm:text-2xl text-muted font-normal max-w-3xl leading-relaxed">
             {project.tagline}
           </p>
 
           {/* Quick facts grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-border/60 text-xs font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 hairline-t text-xs font-mono">
             <div>
-              <span className="text-text-muted block mb-1">Role</span>
-              <span className="text-text">{project.role}</span>
+              <span className="text-muted block mb-1">Role</span>
+              <span className="text-ink font-medium">{project.role}</span>
             </div>
             <div>
-              <span className="text-text-muted block mb-1">Timeline</span>
-              <span className="text-text">{project.timeline}</span>
+              <span className="text-muted block mb-1">Timeline</span>
+              <span className="text-ink font-medium">{project.timeline}</span>
             </div>
             <div>
-              <span className="text-text-muted block mb-1">Stack</span>
-              <span className="text-text">{project.technologies.slice(0, 3).join(', ')}</span>
+              <span className="text-muted block mb-1">Stack</span>
+              <span className="text-ink font-medium">{project.technologies.slice(0, 3).join(', ')}</span>
             </div>
             <div>
-              <span className="text-text-muted block mb-1">Source</span>
+              <span className="text-muted block mb-1">Source</span>
               {project.githubUrl ? (
                 <a
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent hover:underline inline-flex items-center gap-1"
+                  className="text-accent hover:underline inline-flex items-center gap-1 font-medium"
                 >
                   GitHub <ArrowUpRight className="w-3 h-3" />
                 </a>
               ) : (
-                <span className="text-text-muted">—</span>
+                <span className="text-muted">—</span>
               )}
             </div>
           </div>
         </div>
 
         {/* Problem → Solution → Result */}
-        <div className="py-20 space-y-20 border-b border-border">
+        <div className="py-20 space-y-20 hairline-b">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             <div className="md:col-span-4">
-              <span className="text-xs uppercase tracking-widest text-text-muted font-mono block">
+              <span className="text-xs uppercase tracking-widest text-muted font-mono block">
                 01 / The problem
               </span>
             </div>
             <div className="md:col-span-8">
-              <p className="text-base sm:text-lg text-text-muted font-light leading-relaxed">
+              <p className="text-base sm:text-lg text-muted font-normal leading-relaxed">
                 {project.problem}
               </p>
             </div>
@@ -106,12 +106,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             <div className="md:col-span-4">
-              <span className="text-xs uppercase tracking-widest text-text-muted font-mono block">
+              <span className="text-xs uppercase tracking-widest text-muted font-mono block">
                 02 / The solution
               </span>
             </div>
             <div className="md:col-span-8">
-              <p className="text-base sm:text-lg text-text-muted font-light leading-relaxed">
+              <p className="text-base sm:text-lg text-muted font-normal leading-relaxed">
                 {project.solution}
               </p>
             </div>
@@ -119,25 +119,25 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             <div className="md:col-span-4">
-              <span className="text-xs uppercase tracking-widest text-text-muted font-mono block">
+              <span className="text-xs uppercase tracking-widest text-muted font-mono block">
                 03 / The result
               </span>
             </div>
             <div className="md:col-span-8">
-              <p className="text-base sm:text-lg text-text font-normal leading-relaxed">
+              <p className="text-base sm:text-lg text-ink font-medium leading-relaxed">
                 {project.result}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Architecture Diagram Component */}
+        {/* Architecture Diagram */}
         {project.architecture && (
-          <div className="py-20 border-b border-border">
-            <span className="text-xs uppercase tracking-widest text-text-muted font-mono block mb-4">
+          <div className="py-20 hairline-b">
+            <span className="text-xs uppercase tracking-widest text-muted font-mono block mb-4">
               Architecture flow
             </span>
-            <p className="text-sm text-text-muted font-light mb-10 max-w-xl">
+            <p className="text-sm text-muted mb-10 max-w-xl">
               {project.architecture.summary}
             </p>
 
@@ -145,11 +145,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               {project.architecture.nodes.map((node, i) => (
                 <div
                   key={node.label}
-                  className="p-6 rounded border border-border bg-bg/50 space-y-2 relative"
+                  className="p-6 rounded border border-line bg-bg/50 space-y-2 relative"
                 >
                   <span className="text-xs font-mono text-accent block">Step 0{i + 1}</span>
-                  <h3 className="font-heading text-lg font-medium text-text">{node.label}</h3>
-                  <p className="text-xs text-text-muted font-light leading-relaxed">
+                  <h3 className="font-display text-lg font-bold text-ink">{node.label}</h3>
+                  <p className="text-xs text-muted leading-relaxed">
                     {node.desc}
                   </p>
                 </div>
@@ -160,13 +160,13 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
         {/* Lessons Learned */}
         {project.lessonsLearned && (
-          <div className="py-20 border-b border-border">
-            <span className="text-xs uppercase tracking-widest text-text-muted font-mono block mb-6">
+          <div className="py-20 hairline-b">
+            <span className="text-xs uppercase tracking-widest text-muted font-mono block mb-6">
               Lessons learned
             </span>
             <ul className="space-y-4 max-w-3xl">
               {project.lessonsLearned.map((lesson, idx) => (
-                <li key={idx} className="text-sm sm:text-base text-text-muted font-light flex items-start gap-4">
+                <li key={idx} className="text-sm sm:text-base text-muted flex items-start gap-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                   <span>{lesson}</span>
                 </li>
@@ -177,10 +177,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
         {/* Next Project Link */}
         <div className="pt-20">
-          <span className="text-xs font-mono text-text-muted block mb-3">Next project</span>
+          <span className="text-xs font-mono text-muted block mb-3">Next project</span>
           <Link
             href={`/projects/${nextProject.slug}`}
-            className="group inline-flex items-center gap-4 text-2xl sm:text-4xl font-heading font-medium text-text hover:text-accent transition-colors"
+            className="group inline-flex items-center gap-4 text-3xl sm:text-5xl font-display font-bold text-ink hover:text-accent transition-colors"
           >
             <span>{nextProject.title}</span>
             <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />

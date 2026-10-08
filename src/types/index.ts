@@ -44,6 +44,7 @@ export interface ProfileData {
   headline: string;
   subtext: string;
   about: string;
+  aboutSupport?: string;
   email: string;
   githubUrl: string;
   linkedinUrl: string;

@@ -1,31 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Inter_Tight } from "next/font/google";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  variable: "--font-heading",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
-
-const interTight = Inter_Tight({
-  subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
-  weight: ["300", "400", "500", "600"],
-});
-
 export const metadata: Metadata = {
-  title: "Ajay H A - Full-stack developer",
+  title: "Ajay A - Full-stack developer",
   description:
-    "Full-stack developer based in Bengaluru, India. Crafting calm, intentional web applications with high-performance architectures.",
+    "Full-stack developer based in Bengaluru, India. I build web products from the interface to the API.",
   metadataBase: new URL("https://ajayha.dev"),
   openGraph: {
-    title: "Ajay H A - Full-stack developer",
-    description: "Full-stack developer based in Bengaluru, India.",
+    title: "Ajay A - Full-stack developer",
+    description: "I build web products from the interface to the API. Based in Bengaluru.",
     url: "https://ajayha.dev",
-    siteName: "Ajay H A Portfolio",
+    siteName: "Ajay A Portfolio",
     locale: "en_US",
     type: "website",
   },
@@ -36,8 +21,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0E0E12",
-  colorScheme: "dark light",
+  themeColor: "#E8EAEE",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -46,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${interTight.variable}`}>
-      <body className="min-h-screen bg-bg text-text selection:bg-accent selection:text-bg antialiased">
+    <html lang="en">
+      <body className="min-h-screen bg-bg text-ink antialiased">
         {children}
       </body>
     </html>
