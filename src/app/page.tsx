@@ -2,6 +2,7 @@ import { CustomCursor } from '@/components/CustomCursor';
 import { Navbar } from '@/components/Navbar';
 import { PickYourPath } from '@/components/PickYourPath';
 import { HeroSection } from '@/components/HeroSection';
+import { OrbitHero } from '@/components/OrbitHero';
 import { MarqueeBand } from '@/components/MarqueeBand';
 import { AboutSection } from '@/components/AboutSection';
 import { SkillsSection } from '@/components/SkillsSection';
@@ -9,6 +10,8 @@ import { WorkSection } from '@/components/WorkSection';
 import { ExperienceSection } from '@/components/ExperienceSection';
 import { ContactSection } from '@/components/ContactSection';
 import { FloatingControls } from '@/components/FloatingControls';
+import { CommandPalette } from '@/components/CommandPalette';
+import { AIAssistantDrawer } from '@/components/AIAssistantDrawer';
 import { Footer } from '@/components/Footer';
 
 export default function HomePage() {
@@ -17,8 +20,10 @@ export default function HomePage() {
       <CustomCursor />
       <Navbar />
       <PickYourPath />
-      <main>
+      <main className="relative">
         <HeroSection />
+        {/* Living 3D Orbit Shape with Orbiting Particles */}
+        <OrbitHero />
         <MarqueeBand />
         <AboutSection />
         <SkillsSection />
@@ -27,6 +32,8 @@ export default function HomePage() {
         <ContactSection />
       </main>
       <FloatingControls />
+      <CommandPalette />
+      <AIAssistantDrawer />
       <Footer />
     </div>
   );
