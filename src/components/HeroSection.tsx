@@ -2,14 +2,26 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { ArrowDown } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { ArrowDown, Sparkles } from 'lucide-react';
 import { PROFILE } from '@/data/portfolioData';
+
+const OrbitCanvas = dynamic(
+  () => import('./OrbitCanvas').then((mod) => mod.OrbitCanvas),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex items-center justify-center text-xs font-mono text-muted">
+        Loading 3D engine...
+      </div>
+    ),
+  }
+);
 
 export function HeroSection() {
   const letters = ['A', 'j', 'a', 'y', ' ', 'A'];
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [weights, setWeights] = useState<number[]>([700, 700, 700, 700, 400, 700]);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let animId: number;
@@ -30,8 +42,7 @@ export function HeroSection() {
         const letterCenterY = rect.top + rect.height / 2;
         const dist = Math.hypot(e.clientX - letterCenterX, e.clientY - letterCenterY);
 
-        // Distance mapped to font weight 400 - 800
-        const maxDist = 300;
+        const maxDist = 280;
         const normalized = Math.max(0, 1 - dist / maxDist);
         const targetWeight = Math.round(400 + normalized * 400);
 
@@ -45,7 +56,6 @@ export function HeroSection() {
 
     window.addEventListener('mousemove', onMouseMove);
 
-    // Sine-wave ripple when idle or on mobile
     let phase = 0;
     const rippleLoop = () => {
       if (isIdle) {
@@ -70,51 +80,68 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] flex flex-col justify-between pt-16 pb-12 px-6 sm:px-10 max-w-7xl mx-auto">
-      <div className="pt-8 sm:pt-16">
-        {/* Giant Hero Name: ~20vw with interactive font weights */}
-        <div ref={containerRef} className="overflow-visible select-none py-4">
-          <h1 className="font-display text-[17vw] sm:text-[19vw] leading-[0.88] tracking-[-0.04em] text-ink flex items-baseline">
-            {letters.map((char, idx) => (
-              <span
-                key={idx}
-                ref={(el) => { letterRefs.current[idx] = el; }}
-                style={{ fontWeight: weights[idx] || 700 }}
-                className="transition-[font-weight] duration-75 inline-block"
-              >
-                {char === ' ' ? ' ' : char}
-              </span>
-            ))}
-          </h1>
-        </div>
+    <section className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-between px-6 sm:px-10 max-w-7xl mx-auto py-6 sm:py-8 overflow-hidden">
+      {/* Top Banner Badge */}
+      <div className="flex items-center justify-between text-xs font-mono text-muted pt-2">
+        <span className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Bengaluru, India (UTC+05:30) • Available</span>
+        </span>
+        <span className="hidden sm:inline-block text-[11px] text-muted/70">
+          Scroll-linked 3D Orbit
+        </span>
+      </div>
 
-        {/* Tagline & Call-to-actions */}
-        <div className="mt-8 sm:mt-12 max-w-2xl">
-          <p className="text-xl sm:text-2xl text-muted font-normal leading-snug">
+      {/* Main Hero Body: Left Typography + Right 3D Orbit Object */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center my-auto py-4">
+        {/* Left Column: Headline, Tagline, CTAs */}
+        <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10">
+          {/* Giant Name with Responsive Clamp: Never overflows screen */}
+          <div className="select-none overflow-visible">
+            <h1 className="font-display text-[clamp(3.8rem,9.5vw,9.5rem)] leading-[0.88] tracking-[-0.04em] text-ink flex items-baseline">
+              {letters.map((char, idx) => (
+                <span
+                  key={idx}
+                  ref={(el) => { letterRefs.current[idx] = el; }}
+                  style={{ fontWeight: weights[idx] || 700 }}
+                  className="transition-[font-weight] duration-75 inline-block"
+                >
+                  {char === ' ' ? ' ' : char}
+                </span>
+              ))}
+            </h1>
+          </div>
+
+          <p className="text-lg sm:text-2xl text-muted font-normal max-w-xl leading-snug">
             {PROFILE.subtext}
           </p>
 
-          <div className="mt-8 flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2">
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-accent text-white font-medium text-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-accent text-white font-medium text-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
             >
               Let's talk
             </Link>
             <Link
               href="#work"
-              className="text-sm font-medium text-muted hover:text-ink transition-colors"
+              className="inline-flex items-center text-sm font-medium text-muted hover:text-ink transition-colors"
             >
               view selected work →
             </Link>
           </div>
         </div>
+
+        {/* Right Column: 3D Living Orbit Object (Right of center) */}
+        <div className="lg:col-span-5 h-[320px] sm:h-[400px] lg:h-[480px] w-full flex items-center justify-center relative">
+          <OrbitCanvas />
+        </div>
       </div>
 
-      <div className="pt-16 flex items-center justify-between text-xs text-muted font-mono hairline-t">
-        <span className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-accent inline-block animate-pulse" />
-          Bengaluru, India
+      {/* Bottom Hero Bar: Scroll Hint */}
+      <div className="flex items-center justify-between text-xs text-muted font-mono hairline-t pt-4">
+        <span className="text-[11px] text-muted/60">
+          Drag 3D object to rotate parallax
         </span>
 
         <Link
