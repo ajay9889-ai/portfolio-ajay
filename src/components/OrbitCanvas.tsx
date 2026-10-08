@@ -55,7 +55,7 @@ export function OrbitCanvas() {
     const ringGeo = new THREE.TorusGeometry(1.4, 0.28, 32, 100);
     const orbGeo = new THREE.SphereGeometry(1.4, 32, 32);
 
-    let activeGeo = icosaGeo;
+    let activeGeo: THREE.BufferGeometry = icosaGeo;
 
     // Solid inner core material
     const solidMat = new THREE.MeshStandardMaterial({
@@ -113,7 +113,7 @@ export function OrbitCanvas() {
     // Shape switch listener
     const onShapeChange = (e: any) => {
       const type = e.detail;
-      let nextGeo = icosaGeo;
+      let nextGeo: THREE.BufferGeometry = icosaGeo;
       if (type === 'knot') nextGeo = knotGeo;
       else if (type === 'ring') nextGeo = ringGeo;
       else if (type === 'orb') nextGeo = orbGeo;

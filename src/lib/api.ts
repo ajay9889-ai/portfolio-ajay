@@ -1,7 +1,7 @@
 import { ProfileData, Project, SkillGroup, ExperienceItem } from "@/types";
 import { PROFILE, PROJECTS, SKILL_GROUPS, TIMELINE } from "@/data/portfolioData";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-backend-t782.onrender.com/api/v1";
 
 export async function fetchProfile(): Promise<ProfileData> {
   try {

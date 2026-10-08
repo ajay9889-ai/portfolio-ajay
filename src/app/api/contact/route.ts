@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Forward to backend API if running
-    const backendUrl = process.env.BACKEND_API_URL || "http://localhost:5001/api/v1/contact";
+    const backendUrl = process.env.BACKEND_API_URL || "https://portfolio-backend-t782.onrender.com/api/v1/contact";
     try {
       const res = await fetch(backendUrl, {
         method: "POST",
