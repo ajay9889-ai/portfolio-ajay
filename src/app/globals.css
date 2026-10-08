@@ -3,41 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #E8EAEE;
-  --color-ink: #0F1115;
-  --color-muted: #5D6470;
-  --color-line: #C9CDD4;
-  --color-accent: #2D4BFF;
-  --color-accent-glow: rgba(45, 75, 255, 0.25);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #0F1115;
-    --color-ink: #E8EAEE;
-    --color-muted: #8D94A1;
-    --color-line: #272B33;
-    --color-accent: #7189FF;
-    --color-accent-glow: rgba(113, 137, 255, 0.25);
-  }
+  /* Default: Dark Obsidian Theme (Calm, Premium, High Contrast) */
+  --color-bg: #0E0E12;
+  --color-ink: #ECEBE7;
+  --color-text: #ECEBE7;
+  --color-muted: #8B8B95;
+  --color-line: rgba(236, 235, 231, 0.09);
+  --color-accent: #8B7CFF;
+  --color-accent-glow: rgba(139, 124, 255, 0.35);
 }
 
 [data-theme="light"] {
-  --color-bg: #E8EAEE;
-  --color-ink: #0F1115;
-  --color-muted: #5D6470;
-  --color-line: #C9CDD4;
-  --color-accent: #2D4BFF;
-  --color-accent-glow: rgba(45, 75, 255, 0.25);
+  --color-bg: #F5F4F0;
+  --color-ink: #121216;
+  --color-text: #121216;
+  --color-muted: #6B6A75;
+  --color-line: rgba(18, 18, 22, 0.08);
+  --color-accent: #6C5CE7;
+  --color-accent-glow: rgba(108, 92, 231, 0.25);
 }
 
 [data-theme="dark"] {
-  --color-bg: #0F1115;
-  --color-ink: #E8EAEE;
-  --color-muted: #8D94A1;
-  --color-line: #272B33;
-  --color-accent: #7189FF;
-  --color-accent-glow: rgba(113, 137, 255, 0.25);
+  --color-bg: #0E0E12;
+  --color-ink: #ECEBE7;
+  --color-text: #ECEBE7;
+  --color-muted: #8B8B95;
+  --color-line: rgba(236, 235, 231, 0.09);
+  --color-accent: #8B7CFF;
+  --color-accent-glow: rgba(139, 124, 255, 0.35);
 }
 
 * {
@@ -54,10 +47,10 @@ html, body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 500ms cubic-bezier(0.16, 1, 0.3, 1), color 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1), color 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hairline dividers */
+/* Hairline borders */
 .hairline-b {
   border-bottom: 1px solid var(--color-line);
 }
@@ -77,7 +70,7 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
-/* Work row ink-fill & text inversion */
+/* Work row ink-fill hover */
 .work-row {
   position: relative;
   transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -127,8 +120,8 @@ textarea:focus-visible {
   animation-play-state: paused;
 }
 
-/* Selection */
+/* Accent selection tint */
 ::selection {
   background-color: var(--color-accent);
-  color: #FFFFFF;
+  color: #0E0E12;
 }
