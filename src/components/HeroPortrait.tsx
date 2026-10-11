@@ -37,7 +37,7 @@ export function HeroPortrait() {
       {/* 1. Behind: Theme-Aware Soft Cosmic Indigo / Violet Orb Backdrop */}
       <div 
         aria-hidden="true"
-        className="absolute top-6 sm:top-10 left-8 sm:left-14 w-[300px] h-[300px] sm:w-[370px] sm:h-[370px] rounded-full bg-gradient-to-tr from-indigo-200/50 via-purple-100/40 to-violet-200/30 border border-indigo-200/40 dark:from-[#1E1B4B]/90 dark:via-[#2A2368]/70 dark:to-[#4338CA]/40 dark:border-indigo-500/20 blur-[1px] pointer-events-none transition-colors duration-400"
+        className="absolute top-4 sm:top-6 left-6 sm:left-10 w-[270px] h-[270px] sm:w-[340px] sm:h-[340px] lg:w-[370px] lg:h-[370px] rounded-full bg-gradient-to-tr from-indigo-200/50 via-purple-100/40 to-violet-200/30 border border-indigo-200/40 dark:from-[#1E1B4B]/90 dark:via-[#2A2368]/70 dark:to-[#4338CA]/40 dark:border-indigo-500/20 blur-[1px] pointer-events-none transition-colors duration-400"
       />
 
       {/* 2. Interactive Portrait Layer (100% Transparent Cutout with Cursor Color Reveal) */}
@@ -48,10 +48,10 @@ export function HeroPortrait() {
         onMouseLeave={() => setIsHovered(false)}
         onTouchMove={handleTouchMove}
         onTouchStart={() => setIsHovered(true)}
-        className="relative z-10 w-[350px] sm:w-[410px] h-[440px] sm:h-[500px] cursor-pointer overflow-hidden"
+        className="relative z-10 w-[320px] sm:w-[380px] lg:w-[420px] h-[400px] sm:h-[460px] lg:h-[480px] cursor-pointer overflow-hidden"
         style={{
-          maskImage: 'linear-gradient(to bottom, black 82%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 82%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 84%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 84%, transparent 100%)',
         }}
       >
         {/* BASE: Black & White Transparent Portrait (Default state) */}
