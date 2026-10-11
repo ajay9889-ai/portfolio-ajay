@@ -12,11 +12,6 @@ export function HeroSection() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-14 xl:gap-16 items-center w-full my-auto">
         {/* Left Column: Heading, Bio & CTAs */}
         <div className="lg:col-span-7 xl:col-span-7 space-y-3.5 sm:space-y-6 lg:space-y-7 z-10 text-left">
-          {/* 1. Availability Status Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-emerald-500/35 bg-emerald-950/40 text-emerald-400 text-[11px] sm:text-xs md:text-sm font-mono shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-            <span className="truncate">Available for Freelancing &amp; Projects</span>
-          </div>
 
           {/* 2. Role Tracker */}
           <span className="text-[11px] sm:text-xs md:text-sm uppercase tracking-[0.2em] text-muted/80 font-mono block">
