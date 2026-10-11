@@ -40,7 +40,7 @@ export function AIAssistantDrawer() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  // Load and filter male voices
+  // Load and filter Indian English voices
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -51,7 +51,7 @@ export function AIAssistantDrawer() {
       setSpeechSupported(true);
     }
 
-    // Load available browser TTS voices
+    // Load available browser TTS voices — prefer Indian English
     const updateVoices = () => {
       if (!window.speechSynthesis) return;
       const allVoices = window.speechSynthesis.getVoices();
@@ -59,22 +59,44 @@ export function AIAssistantDrawer() {
 
       setVoices(allVoices);
 
-      // Prioritize male English voices
-      const maleNames = ['george', 'ravi', 'david', 'mark', 'guy', 'daniel', 'alex', 'oliver', 'rishi', 'male'];
-      const femaleNames = ['hazel', 'zira', 'susan', 'heera', 'eva', 'catherina', 'linda', 'female', 'girl'];
+      // Priority order for Indian English male voice:
+      // 1. en-IN voices named Ravi (Google Indian male)
+      // 2. Any en-IN male voice
+      // 3. Any en-IN voice
+      // 4. en-GB/en-US male voice as last resort
+      const femaleNames = ['hazel', 'zira', 'susan', 'heera', 'eva', 'catherina', 'linda', 'female', 'girl', 'priya', 'meera', 'lekha'];
+      const maleIndianNames = ['ravi', 'rishi', 'arjun', 'dev', 'karan'];
+      const maleFallbackNames = ['george', 'david', 'mark', 'guy', 'daniel', 'alex', 'oliver', 'male'];
 
-      const maleVoice = allVoices.find((v) => {
-        const lower = v.name.toLowerCase();
-        const isFemale = femaleNames.some((f) => lower.includes(f));
-        const isMale = maleNames.some((m) => lower.includes(m));
-        return !isFemale && isMale && v.lang.startsWith('en');
-      }) || allVoices.find((v) => {
-        const lower = v.name.toLowerCase();
-        return !femaleNames.some((f) => lower.includes(f)) && v.lang.startsWith('en');
-      }) || allVoices[0];
+      const isFemaleVoice = (v: SpeechSynthesisVoice) =>
+        femaleNames.some((f) => v.name.toLowerCase().includes(f));
 
-      if (maleVoice) {
-        setSelectedVoice(maleVoice);
+      // 1. Indian English named male (e.g. "Google हिन्दी" / "Ravi" / "Microsoft Ravi")
+      const indianMale = allVoices.find((v) =>
+        v.lang === 'en-IN' &&
+        !isFemaleVoice(v) &&
+        maleIndianNames.some((m) => v.name.toLowerCase().includes(m))
+      );
+
+      // 2. Any en-IN non-female voice
+      const indianAny = allVoices.find((v) =>
+        v.lang === 'en-IN' && !isFemaleVoice(v)
+      );
+
+      // 3. Any en-IN voice (even female — better accent than generic)
+      const indianFallback = allVoices.find((v) => v.lang === 'en-IN');
+
+      // 4. Generic English male last resort
+      const genericMale = allVoices.find((v) =>
+        !isFemaleVoice(v) &&
+        maleFallbackNames.some((m) => v.name.toLowerCase().includes(m)) &&
+        v.lang.startsWith('en')
+      );
+
+      const chosenVoice = indianMale || indianAny || indianFallback || genericMale || allVoices[0];
+
+      if (chosenVoice) {
+        setSelectedVoice(chosenVoice);
       }
     };
 
@@ -95,26 +117,32 @@ export function AIAssistantDrawer() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading, activeMode]);
 
-  // Speak AI response with chosen Male Voice
+  // Speak AI response with Indian English voice
   const speakText = (text: string, messageId?: string) => {
     if (!voiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
 
     window.speechSynthesis.cancel(); // Stop current speech
 
-    // Clean markdown symbols for natural human speech
+    // Clean markdown/emoji/URLs for natural spoken delivery
     const spokenText = text
       .replace(/[*_#`~]/g, '')
       .replace(/https?:\/\/\S+/g, '')
+      .replace(/🏆|👋|🙌|📬|💬|✅|❌|⚠️/g, '')
+      .replace(/•/g, ',')
       .trim();
 
     const utterance = new SpeechSynthesisUtterance(spokenText);
 
+    // Apply chosen Indian English voice
     if (selectedVoice) {
       utterance.voice = selectedVoice;
     }
 
-    utterance.pitch = 0.95; // Confident male resonance
-    utterance.rate = 1.0;   // Conversational speed
+    // Tune for natural Indian English delivery
+    utterance.lang = 'en-IN';  // Indian English language tag
+    utterance.pitch = 1.0;     // Natural, confident tone
+    utterance.rate = 0.92;     // Slightly slower — clear and crisp
+    utterance.volume = 1.0;
 
     utterance.onstart = () => {
       setIsSpeaking(true);
@@ -166,8 +194,8 @@ export function AIAssistantDrawer() {
     try {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
+      recognition.interimResults = true;  // Show interim results for responsiveness
+      recognition.lang = 'en-IN';          // Indian English — understands Indian accent
 
       recognition.onstart = () => {
         setIsListening(true);
@@ -175,9 +203,13 @@ export function AIAssistantDrawer() {
       };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results?.[0]?.[0]?.transcript;
-        if (transcript) {
-          sendMessage(transcript);
+        // Only process final results, not interim (partial) ones
+        const result = event.results?.[0];
+        if (result?.isFinal) {
+          const transcript = result?.[0]?.transcript?.trim();
+          if (transcript) {
+            sendMessage(transcript);
+          }
         }
       };
 
