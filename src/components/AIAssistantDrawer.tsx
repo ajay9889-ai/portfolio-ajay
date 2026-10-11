@@ -233,12 +233,15 @@ export function AIAssistantDrawer() {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(`Chat API error`);
+      let reply = '';
+      if (res.ok) {
+        const data = await res.json();
+        reply = data.reply;
       }
 
-      const data = await res.json();
-      const reply = data.reply || "Ajay A is a full-stack developer in Bengaluru specializing in React, Next.js, and AI systems. Feel free to connect at ajayhasrb123@gmail.com!";
+      if (!reply) {
+        reply = "Ajay A is a full-stack developer in Bengaluru specializing in React, Next.js, and AI systems. Feel free to connect at ajayhasrb123@gmail.com!";
+      }
 
       const assistantMsgId = `assistant-${Date.now()}`;
       setMessages((prev) => [
@@ -250,8 +253,8 @@ export function AIAssistantDrawer() {
         speakText(reply, assistantMsgId);
       }
     } catch (err: any) {
-      console.error('Error in chat request:', err);
-      const fallbackId = `err-${Date.now()}`;
+      console.warn('Network issue in chat request, using fallback:', err);
+      const fallbackId = `fallback-${Date.now()}`;
       const fallback = "Ajay A is a full-stack developer in Bengaluru specializing in React, Next.js, and scalable APIs. Feel free to connect at ajayhasrb123@gmail.com!";
       setMessages((prev) => [
         ...prev,
@@ -299,7 +302,7 @@ export function AIAssistantDrawer() {
 
       {/* 2. Floating AI Assistant Popover Card */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[410px] h-[560px] max-h-[84vh] rounded-3xl bg-[#121218]/95 dark:bg-[#0D0D12]/95 border border-white/12 shadow-[0_25px_70px_rgba(0,0,0,0.55)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-x-2.5 bottom-2 sm:bottom-20 sm:right-6 sm:inset-x-auto z-50 w-auto sm:w-[410px] h-[86vh] sm:h-[560px] max-h-[88vh] rounded-3xl bg-[#121218]/95 dark:bg-[#0D0D12]/95 border border-white/12 shadow-[0_25px_70px_rgba(0,0,0,0.55)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           {/* Card Header */}
           <div className="p-3.5 border-b border-white/10 bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -420,7 +423,7 @@ export function AIAssistantDrawer() {
               MODE 1: VOICE AGENT (ANIMATED CIRCLE - NO TEXT)
              ======================================================== */}
           {activeMode === 'voice' ? (
-            <div className="flex-1 flex flex-col justify-between p-5 relative overflow-hidden select-none">
+            <div className="flex-1 flex flex-col justify-between p-4 sm:p-5 relative overflow-hidden select-none">
               {/* Ambient Glow Atmosphere Behind Circle */}
               <div 
                 aria-hidden="true" 
@@ -428,7 +431,7 @@ export function AIAssistantDrawer() {
               />
 
               {/* Top Subtitle Status */}
-              <div className="relative z-10 text-center space-y-1 pt-1">
+              <div className="relative z-10 text-center space-y-1 pt-0.5">
                 <span className="text-[11px] font-mono uppercase tracking-widest text-violet-300/80 block">
                   AI Voice Agent
                 </span>
@@ -448,9 +451,9 @@ export function AIAssistantDrawer() {
                 {/* Expanding Concentric Ripple Rings when Active */}
                 {(isSpeaking || isListening) && (
                   <>
-                    <div className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-violet-500/50 animate-voice-ripple-1 pointer-events-none" />
-                    <div className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-indigo-400/40 animate-voice-ripple-2 pointer-events-none" />
-                    <div className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-cyan-400/30 animate-voice-ripple-3 pointer-events-none" />
+                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-violet-500/50 animate-voice-ripple-1 pointer-events-none" />
+                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-indigo-400/40 animate-voice-ripple-2 pointer-events-none" />
+                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-cyan-400/30 animate-voice-ripple-3 pointer-events-none" />
                   </>
                 )}
 
@@ -464,7 +467,7 @@ export function AIAssistantDrawer() {
                       toggleListening();
                     }
                   }}
-                  className={`relative w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl focus:outline-none ${
+                  className={`relative w-36 h-36 xs:w-40 xs:h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl focus:outline-none ${
                     isListening
                       ? 'bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-500 shadow-[0_0_70px_rgba(16,185,129,0.7)] animate-pulse scale-105'
                       : isLoading

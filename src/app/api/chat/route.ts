@@ -31,9 +31,47 @@ Ajay's Key Profile Data:
 
 Response Style:
 - Professional, confident, warm, and natural.
-- Since you power both text chat and an AI voice agent, keep responses concise, conversational, and direct (2-3 sentences typically), unless the user asks for deep technical breakdown.
+- Keep responses conversational, crisp, and direct (2-3 sentences typically) so it sounds great when spoken aloud by the voice agent.
 - Always provide helpful direct answers and encourage reaching out via the contact form or email (ajayhasrb123@gmail.com).
 `.trim();
+
+function getIntelligentPortfolioReply(message: string): string {
+  const query = message.toLowerCase();
+
+  if (query.includes('eldernest') || query.includes('hackverse') || query.includes('elder') || query.includes('award') || query.includes('prize') || query.includes('winner')) {
+    return "ElderNest won 1st Place at HackVerse 2025! It is an empathetic, accessible web application designed for senior citizens featuring emergency SOS dispatching, high-contrast WCAG-compliant UI, and voice-assisted navigation built with React, Node.js, and Express.";
+  }
+
+  if (query.includes('brikup') || query.includes('intern') || query.includes('experience') || query.includes('work') || query.includes('company')) {
+    return "Ajay worked as a Software Development Engineer Intern at BrikUp in Bengaluru. He shipped core production features using Next.js and TypeScript, engineered secure REST authentication flows, and resolved complex data hydration and state synchronization across primary views.";
+  }
+
+  if (query.includes('wisdomplay') || query.includes('game') || query.includes('unity')) {
+    return "WisdomPlay is an educational multilingual game engineered in Unity. It features dynamic JSON-driven quizzes, responsive 2D animation controllers, audio cues, and modular level architectures designed to enhance cognitive engagement.";
+  }
+
+  if (query.includes('attendance') || query.includes('iot') || query.includes('rfid')) {
+    return "The Smart Attendance System is an IoT automation solution connecting RFID card hardware to a Python bridge and MySQL database, executing rapid contactless attendance scans in under 400ms with automated logging.";
+  }
+
+  if (query.includes('tech stack') || query.includes('skill') || query.includes('stack') || query.includes('technology') || query.includes('frontend') || query.includes('backend') || query.includes('framework')) {
+    return "Ajay's core tech stack spans frontend (React, Next.js 15/16 App Router, TypeScript, TailwindCSS, Three.js), backend (Node.js, Express, REST APIs, WebSockets), and databases (PostgreSQL, MongoDB, MySQL). He also builds AI-integrated features with modern LLM APIs.";
+  }
+
+  if (query.includes('hire') || query.includes('available') || query.includes('freelance') || query.includes('contact') || query.includes('email') || query.includes('job') || query.includes('opportunity')) {
+    return "Yes! Ajay is actively available for full-time Software Engineering roles, contracts, and freelance projects. You can reach out directly using the Contact form below or email him at ajayhasrb123@gmail.com.";
+  }
+
+  if (query.includes('education') || query.includes('degree') || query.includes('college') || query.includes('mca') || query.includes('bca') || query.includes('bmsit')) {
+    return "Ajay holds an MCA from BMS Institute of Technology and Management, Bengaluru (8.5 CGPA, 2023–2025) and a BCA from Government First Grade College, Sorab (8.2 CGPA, 2020–2023).";
+  }
+
+  if (query.includes('who are you') || query.includes('ajay') || query.includes('about') || query.includes('introduce')) {
+    return "Ajay A is a Bengaluru-based Full-Stack Developer & AI Systems Engineer who builds high-impact web products from frontend interfaces to scalable backend APIs. Feel free to ask about his projects or hire him!";
+  }
+
+  return "Hello! Ajay A is a Full-Stack Developer specializing in Next.js, React, Node.js, and AI systems. Feel free to ask about his HackVerse-winning ElderNest project, his BrikUp SDE internship, or get in touch at ajayhasrb123@gmail.com!";
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,45 +98,53 @@ export async function POST(req: NextRequest) {
     // Append current user message
     contents.push({ role: 'user', parts: [{ text: message }] });
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    let replyText = '';
 
-    const geminiRes = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: SYSTEM_INSTRUCTION }],
-        },
-        contents,
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 300,
-        },
-      }),
-    });
+    // Attempt Gemini API if key is available
+    if (GEMINI_API_KEY && GEMINI_API_KEY.length > 10) {
+      try {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    if (!geminiRes.ok) {
-      const errData = await geminiRes.text();
-      console.error('Gemini API Error:', geminiRes.status, errData);
-      return NextResponse.json(
-        { error: 'Failed to generate response from Gemini' },
-        { status: geminiRes.status }
-      );
+        const geminiRes = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [{ text: SYSTEM_INSTRUCTION }],
+            },
+            contents,
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 300,
+            },
+          }),
+        });
+
+        if (geminiRes.ok) {
+          const data = await geminiRes.json();
+          replyText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+        } else {
+          const errData = await geminiRes.text();
+          console.warn('Gemini API notice (status ' + geminiRes.status + '):', errData);
+        }
+      } catch (geminiErr) {
+        console.warn('Gemini fetch error, using built-in portfolio intelligence:', geminiErr);
+      }
     }
 
-    const data = await geminiRes.json();
-    const replyText =
-      data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
-      "Ajay A is a full-stack developer based in Bengaluru specializing in React, Next.js, and AI systems. Feel free to connect at ajayhasrb123@gmail.com!";
+    // Fallback to intelligent portfolio rule-engine if Gemini key is revoked, rate-limited, or failed
+    if (!replyText) {
+      replyText = getIntelligentPortfolioReply(message);
+    }
 
     return NextResponse.json({ reply: replyText });
   } catch (err: unknown) {
     console.error('Chat API Error:', err);
     return NextResponse.json(
-      { error: 'Internal server error processing chat' },
-      { status: 500 }
+      { reply: "Ajay A is a full-stack developer based in Bengaluru specializing in React, Next.js, and AI systems. Feel free to connect at ajayhasrb123@gmail.com!" },
+      { status: 200 }
     );
   }
 }
