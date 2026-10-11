@@ -1,17 +1,68 @@
 import fs from 'fs';
 import path from 'path';
 
-const DATA_DIR = path.join(process.cwd(), 'src/data/admin');
+import os from 'os';
+
+const BUNDLED_DIR = path.join(process.cwd(), 'src/data/admin');
+const TMP_DIR = path.join(os.tmpdir(), 'portfolio-admin');
+
+// Ensure tmp directory exists
+try {
+  if (!fs.existsSync(TMP_DIR)) {
+    fs.mkdirSync(TMP_DIR, { recursive: true });
+  }
+} catch {
+  // non-blocking
+}
+
+function getFilePath(filename: string, forWrite: boolean = false): string {
+  const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+  const tmpPath = path.join(TMP_DIR, filename);
+  const bundledPath = path.join(BUNDLED_DIR, filename);
+
+  if (isServerless) {
+    if (forWrite) return tmpPath;
+    if (fs.existsSync(tmpPath)) return tmpPath;
+    return bundledPath;
+  }
+
+  // Local environment: write directly to project files so git tracks changes
+  return forWrite ? bundledPath : (fs.existsSync(bundledPath) ? bundledPath : tmpPath);
+}
 
 function readJson<T>(filename: string): T {
-  const filePath = path.join(DATA_DIR, filename);
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(raw) as T;
+  const filePath = getFilePath(filename, false);
+  try {
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(raw) as T;
+  } catch {
+    const fallbackPath = path.join(BUNDLED_DIR, filename);
+    const raw = fs.readFileSync(fallbackPath, 'utf-8');
+    return JSON.parse(raw) as T;
+  }
 }
 
 function writeJson(filename: string, data: unknown): void {
-  const filePath = path.join(DATA_DIR, filename);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+  const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+  const content = JSON.stringify(data, null, 2);
+
+  if (isServerless) {
+    const tmpPath = path.join(TMP_DIR, filename);
+    fs.writeFileSync(tmpPath, content, 'utf-8');
+    return;
+  }
+
+  try {
+    const bundledPath = path.join(BUNDLED_DIR, filename);
+    fs.writeFileSync(bundledPath, content, 'utf-8');
+  } catch (err: any) {
+    if (err?.code === 'EROFS') {
+      const tmpPath = path.join(TMP_DIR, filename);
+      fs.writeFileSync(tmpPath, content, 'utf-8');
+    } else {
+      throw err;
+    }
+  }
 }
 
 // ─── Contacts ────────────────────────────────────────────────────────────────
