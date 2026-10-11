@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDKXJXelwY9i9DbLiDrnsKq3hlwz8rTVHY';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 
 const SYSTEM_INSTRUCTION = `
 You are Ajay's official AI Portfolio Voice & Chat Assistant, representing Ajay A—a passionate, high-impact Full-Stack Developer & AI Systems Engineer based in Bengaluru, India.
