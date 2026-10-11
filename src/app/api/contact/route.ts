@@ -21,26 +21,22 @@ export async function POST(req: NextRequest) {
       console.error("[Contact Form] Failed to save contact to admin store:", storeErr);
     }
 
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    // SMTP Credentials with direct fallback for production Vercel deployment
+    const smtpUser = process.env.SMTP_USER || "ajayhasrb123@gmail.com";
+    const smtpPass = process.env.SMTP_PASS || "eegktgkbtkcoqbyv";
     const notifyEmail = process.env.OWNER_NOTIFY_EMAIL || smtpUser || "ajayhasrb123@gmail.com";
 
     let emailSent = false;
 
-    // 2. Send direct Gmail notification if credentials exist (with strict 6s timeout)
+    // 2. Send direct Gmail notification (uses Gmail service preset for fastest SSL delivery)
     if (smtpUser && smtpPass) {
       try {
         const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST || "smtp.gmail.com",
-          port: Number(process.env.SMTP_PORT) || 587,
-          secure: false,
+          service: "gmail",
           auth: {
             user: smtpUser,
             pass: smtpPass,
           },
-          connectionTimeout: 5000,
-          greetingTimeout: 5000,
-          socketTimeout: 5000,
         });
 
         const htmlBody = `
@@ -80,13 +76,13 @@ export async function POST(req: NextRequest) {
         });
 
         emailSent = true;
-        console.log(`[Contact Form] ✅ Email delivered to ${notifyEmail}`);
+        console.log(`[Contact Form] ✅ Email successfully delivered to ${notifyEmail}`);
       } catch (mailErr) {
         console.error("[Contact Form] ⚠️ Nodemailer delivery error:", mailErr);
       }
     }
 
-    // 3. Non-blocking forward to Render backend (never blocks user response or causes timeout)
+    // 3. Non-blocking forward to Render backend
     const backendUrl = process.env.BACKEND_API_URL || "https://portfolio-backend-yxfu.onrender.com/api/v1/contact";
     try {
       const controller = new AbortController();

@@ -1,6 +1,15 @@
 {
   "messages": [
     {
+      "name": "Production Delivery Test",
+      "email": "tester@portfolio.dev",
+      "subject": "Portfolio Contact",
+      "message": "Testing production delivery to your inbox",
+      "id": "msg_mv44bnnizr06",
+      "read": false,
+      "receivedAt": "2026-10-11T17:49:49.567Z"
+    },
+    {
       "name": "gygygghgy",
       "email": "demo@example.com",
       "subject": "Portfolio Contact",
