@@ -8,16 +8,16 @@
 
     <!-- Border Glow Gradient -->
     <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8B7CFF" stop-opacity="0.6"/>
-      <stop offset="50%" stop-color="#8B7CFF" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#3B3469" stop-opacity="0.4"/>
+      <stop offset="0%" stop-color="#FF7A00" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#FF7A00" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FF5500" stop-opacity="0.4"/>
     </linearGradient>
 
     <!-- Letter A Gradient -->
     <linearGradient id="letterGrad" x1="20%" y1="0%" x2="80%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="40%" stop-color="#E0DCFF"/>
-      <stop offset="100%" stop-color="#8B7CFF"/>
+      <stop offset="40%" stop-color="#FFE7D6"/>
+      <stop offset="100%" stop-color="#FF7A00"/>
     </linearGradient>
 
     <!-- Ambient Glow Filter -->
@@ -40,7 +40,7 @@
   <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="url(#borderGrad)" stroke-width="6"/>
 
   <!-- Radial Glow Behind Letter -->
-  <circle cx="256" cy="240" r="140" fill="#8B7CFF" opacity="0.16" filter="url(#glow)"/>
+  <circle cx="256" cy="240" r="140" fill="#FF7A00" opacity="0.16" filter="url(#glow)"/>
 
   <!-- Geometric Monogram "A" -->
   <path
@@ -60,7 +60,7 @@
     fill-rule="evenodd"
   />
 
-  <!-- Subtle Modern Accent Pip (Indigo / Violet Dot) -->
-  <circle cx="256" cy="376" r="14" fill="#8B7CFF" filter="url(#dotGlow)"/>
+  <!-- Subtle Modern Accent Pip (Solar Orange Dot) -->
+  <circle cx="256" cy="376" r="14" fill="#FF7A00" filter="url(#dotGlow)"/>
   <circle cx="256" cy="376" r="6" fill="#FFFFFF"/>
 </svg>

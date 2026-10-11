@@ -26,7 +26,7 @@ export function HeroSection() {
           {/* 3. Main Headline */}
           <h1 className="font-display text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-extrabold tracking-[-0.035em] text-ink leading-[1.04] break-words">
             Hi, I&apos;m{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-indigo-400 to-purple-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-amber-400 to-orange-400">
               Ajay A
             </span>
           </h1>

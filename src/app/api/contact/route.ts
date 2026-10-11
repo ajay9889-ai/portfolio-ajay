@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
         const htmlBody = `
           <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 580px; margin: 0 auto; background: #0E0E12; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; overflow: hidden; color: #ECEBE7;">
-            <div style="background: linear-gradient(135deg, #6C5CE7, #8B7CFF); padding: 24px 28px;">
+            <div style="background: linear-gradient(135deg, #FF5500, #FF7A00); padding: 24px 28px;">
               <h2 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 700;">📬 New Message from Portfolio</h2>
             </div>
             <div style="padding: 28px;">
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; color: #8B8B95; font-size: 13px;">Email:</td>
-                  <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #8B7CFF; text-decoration: none; font-size: 14px;">${email}</a></td>
+                  <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #FF7A00; text-decoration: none; font-size: 14px;">${email}</a></td>
                 </tr>
               </table>
               <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 18px;">

@@ -285,7 +285,7 @@ export function AIAssistantDrawer() {
       {/* 1. Floating AI Assistant Trigger Button (Bottom Right) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xl shadow-indigo-500/25 flex items-center gap-2.5 text-xs font-mono transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20"
+        className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-xl shadow-orange-500/30 flex items-center gap-2.5 text-xs font-mono transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20"
         title="Open Ajay's Floating AI Voice Agent"
       >
         <div className="relative">
@@ -302,11 +302,11 @@ export function AIAssistantDrawer() {
 
       {/* 2. Floating AI Assistant Popover Card */}
       {isOpen && (
-        <div className="fixed inset-x-2.5 bottom-2 sm:bottom-20 sm:right-6 sm:inset-x-auto z-50 w-auto sm:w-[410px] h-[86vh] sm:h-[560px] max-h-[88vh] rounded-3xl bg-[#121218]/95 dark:bg-[#0D0D12]/95 border border-white/12 shadow-[0_25px_70px_rgba(0,0,0,0.55)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-x-2.5 bottom-2 sm:bottom-20 sm:right-6 sm:inset-x-auto z-50 w-auto sm:w-[410px] h-[86vh] sm:h-[560px] max-h-[88vh] rounded-3xl bg-bg/95 dark:bg-[#0D0D12]/95 border border-line dark:border-white/12 text-ink shadow-2xl dark:shadow-[0_25px_70px_rgba(0,0,0,0.65)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           {/* Card Header */}
-          <div className="p-3.5 border-b border-white/10 bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
+          <div className="p-3.5 border-b border-line dark:border-white/10 bg-line/20 dark:bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shadow-inner">
+              <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-inner">
                 <Radio className="w-4 h-4" />
                 {isSpeaking && (
                   <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
@@ -314,30 +314,30 @@ export function AIAssistantDrawer() {
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-display font-bold text-sm text-white">Ajay&apos;s Assistant</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  <span className="font-display font-bold text-sm text-ink dark:text-white">Ajay&apos;s Assistant</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30">
                     Live
                   </span>
                 </div>
                 {/* Male Voice Selector */}
                 <div className="flex items-center gap-1 mt-0.5">
-                  <span className="text-[10px] font-mono text-neutral-400">Voice:</span>
+                  <span className="text-[10px] font-mono text-muted dark:text-neutral-400">Voice:</span>
                   <select
                     value={selectedVoice?.name || ''}
                     onChange={(e) => {
                       const match = voices.find((v) => v.name === e.target.value);
                       if (match) setSelectedVoice(match);
                     }}
-                    className="bg-transparent text-[10px] font-mono text-violet-400 border-b border-violet-500/30 focus:outline-none cursor-pointer max-w-[120px] truncate"
+                    className="bg-transparent text-[10px] font-mono text-orange-600 dark:text-orange-400 border-b border-orange-500/40 focus:outline-none cursor-pointer max-w-[120px] truncate"
                   >
                     {availableMaleVoices.length > 0 ? (
                       availableMaleVoices.map((v) => (
-                        <option key={v.name} value={v.name} className="bg-[#181822] text-neutral-200 text-xs">
+                        <option key={v.name} value={v.name} className="bg-bg text-ink dark:bg-[#181822] dark:text-neutral-200 text-xs">
                           {v.name.replace('Microsoft ', '').replace(' Desktop', '')} (Male)
                         </option>
                       ))
                     ) : (
-                      <option value="" className="bg-[#181822] text-neutral-200">Natural Male Voice</option>
+                      <option value="" className="bg-bg text-ink dark:bg-[#181822] dark:text-neutral-200">Natural Male Voice</option>
                     )}
                   </select>
                 </div>
@@ -347,14 +347,14 @@ export function AIAssistantDrawer() {
             {/* Header Right Actions */}
             <div className="flex items-center gap-1.5">
               {/* Mode Toggle Switcher */}
-              <div className="flex items-center p-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[10px] font-mono">
+              <div className="flex items-center p-0.5 rounded-full bg-line/40 dark:bg-white/[0.06] border border-line dark:border-white/10 text-[10px] font-mono">
                 <button
                   type="button"
                   onClick={() => setActiveMode('voice')}
                   className={`px-2 py-1 rounded-full transition-all flex items-center gap-1 ${
                     activeMode === 'voice'
-                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium shadow-sm'
-                      : 'text-neutral-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white font-medium shadow-sm'
+                      : 'text-muted hover:text-ink dark:text-neutral-400 dark:hover:text-white'
                   }`}
                   title="Voice Agent (Animated circle mode)"
                 >
@@ -366,8 +366,8 @@ export function AIAssistantDrawer() {
                   onClick={() => setActiveMode('chat')}
                   className={`px-2 py-1 rounded-full transition-all flex items-center gap-1 ${
                     activeMode === 'chat'
-                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium shadow-sm'
-                      : 'text-neutral-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white font-medium shadow-sm'
+                      : 'text-muted hover:text-ink dark:text-neutral-400 dark:hover:text-white'
                   }`}
                   title="Text Chat mode"
                 >
@@ -384,8 +384,8 @@ export function AIAssistantDrawer() {
                 }}
                 className={`p-1.5 rounded-full border transition-colors ${
                   voiceEnabled 
-                    ? 'border-violet-500/40 text-violet-300 bg-violet-500/15' 
-                    : 'border-white/10 text-neutral-400 hover:text-white'
+                    ? 'border-orange-500/40 text-orange-600 bg-orange-500/10 dark:text-orange-400 dark:bg-orange-500/15' 
+                    : 'border-line dark:border-white/10 text-muted dark:text-neutral-400 hover:text-ink dark:hover:text-white'
                 }`}
                 title={voiceEnabled ? 'Mute AI voice' : 'Enable AI voice'}
               >
@@ -398,7 +398,7 @@ export function AIAssistantDrawer() {
                   stopSpeaking();
                   setIsOpen(false);
                 }}
-                className="text-neutral-400 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                className="text-muted dark:text-neutral-400 hover:text-ink dark:hover:text-white p-1.5 rounded-full hover:bg-line/40 dark:hover:bg-white/10 transition-colors"
                 title="Close"
               >
                 <X className="w-4 h-4" />
@@ -408,7 +408,7 @@ export function AIAssistantDrawer() {
 
           {/* Error Notice */}
           {errorNotice && (
-            <div className="bg-rose-500/15 border-b border-rose-500/30 px-3.5 py-2 flex items-center justify-between text-xs font-mono text-rose-300">
+            <div className="bg-rose-500/15 border-b border-rose-500/30 px-3.5 py-2 flex items-center justify-between text-xs font-mono text-rose-500 dark:text-rose-300">
               <div className="flex items-center gap-1.5">
                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 <span className="leading-tight text-[11px]">{errorNotice}</span>
@@ -427,15 +427,15 @@ export function AIAssistantDrawer() {
               {/* Ambient Glow Atmosphere Behind Circle */}
               <div 
                 aria-hidden="true" 
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-to-tr from-violet-600/30 via-indigo-500/20 to-cyan-500/25 blur-3xl pointer-events-none transition-all duration-700" 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-orange-500/15 dark:bg-gradient-to-tr dark:from-orange-600/30 dark:via-amber-500/20 dark:to-yellow-500/20 blur-3xl pointer-events-none transition-all duration-700" 
               />
 
               {/* Top Subtitle Status */}
               <div className="relative z-10 text-center space-y-1 pt-0.5">
-                <span className="text-[11px] font-mono uppercase tracking-widest text-violet-300/80 block">
+                <span className="text-[11px] font-mono uppercase tracking-widest text-orange-600 dark:text-orange-400 font-semibold block">
                   AI Voice Agent
                 </span>
-                <p className="text-xs text-neutral-300 font-mono">
+                <p className="text-xs text-muted dark:text-neutral-300 font-mono">
                   {isListening 
                     ? 'Listening... speak to Ajay’s AI' 
                     : isLoading 
@@ -451,9 +451,9 @@ export function AIAssistantDrawer() {
                 {/* Expanding Concentric Ripple Rings when Active */}
                 {(isSpeaking || isListening) && (
                   <>
-                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-violet-500/50 animate-voice-ripple-1 pointer-events-none" />
-                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-indigo-400/40 animate-voice-ripple-2 pointer-events-none" />
-                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-cyan-400/30 animate-voice-ripple-3 pointer-events-none" />
+                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-orange-500/40 dark:border-orange-500/50 animate-voice-ripple-1 pointer-events-none" />
+                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-amber-400/35 dark:border-amber-400/40 animate-voice-ripple-2 pointer-events-none" />
+                    <div className="absolute w-40 h-40 xs:w-44 xs:h-44 sm:w-52 sm:h-52 rounded-full border border-orange-300/30 dark:border-orange-300/35 animate-voice-ripple-3 pointer-events-none" />
                   </>
                 )}
 
@@ -471,17 +471,17 @@ export function AIAssistantDrawer() {
                     isListening
                       ? 'bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-500 shadow-[0_0_70px_rgba(16,185,129,0.7)] animate-pulse scale-105'
                       : isLoading
-                      ? 'bg-gradient-to-tr from-violet-600 via-fuchsia-500 to-indigo-600 shadow-[0_0_70px_rgba(168,85,247,0.7)] animate-voice-spin'
+                      ? 'bg-gradient-to-tr from-amber-600 via-orange-500 to-yellow-500 shadow-[0_0_70px_rgba(245,158,11,0.7)] animate-voice-spin'
                       : isSpeaking
-                      ? 'bg-gradient-to-tr from-violet-600 via-indigo-500 to-purple-500 shadow-[0_0_85px_rgba(168,85,247,0.85)] animate-voice-speaking scale-105'
-                      : 'bg-gradient-to-tr from-violet-700 via-indigo-600 to-purple-800 shadow-[0_0_50px_rgba(139,124,255,0.45)] animate-voice-breathe hover:scale-105 active:scale-95'
+                      ? 'bg-gradient-to-tr from-orange-600 via-amber-500 to-yellow-400 shadow-[0_0_85px_rgba(255,107,0,0.85)] animate-voice-speaking scale-105'
+                      : 'bg-gradient-to-tr from-orange-500 via-amber-500 to-orange-600 shadow-[0_0_55px_rgba(255,107,0,0.55)] dark:shadow-[0_0_60px_rgba(255,107,0,0.6)] animate-voice-breathe hover:scale-105 active:scale-95'
                   }`}
                   title={isSpeaking ? 'Tap to interrupt' : isListening ? 'Tap to stop listening' : 'Tap to speak'}
                 >
-                  {/* Glossy Glass Spherical Overlay */}
-                  <div className="absolute inset-2 rounded-full bg-white/[0.08] backdrop-blur-sm border border-white/25 flex items-center justify-center overflow-hidden">
+                  {/* Glossy Spherical Overlay */}
+                  <div className="absolute inset-2 rounded-full bg-white/[0.12] dark:bg-white/[0.08] backdrop-blur-sm border border-white/30 dark:border-white/25 flex items-center justify-center overflow-hidden">
                     {/* Internal Light Glare */}
-                    <div className="absolute -top-7 -left-7 w-24 h-24 rounded-full bg-white/20 blur-md pointer-events-none" />
+                    <div className="absolute -top-7 -left-7 w-24 h-24 rounded-full bg-white/25 dark:bg-white/20 blur-md pointer-events-none" />
                     
                     {/* State Icon Inside Animated Circle */}
                     {isListening ? (
@@ -509,7 +509,7 @@ export function AIAssistantDrawer() {
                     ) : (
                       <div className="flex flex-col items-center gap-1.5 text-white/95">
                         <Mic className="w-9 h-9 text-white drop-shadow" />
-                        <span className="text-[10px] font-mono tracking-wide opacity-80 uppercase">Tap Circle</span>
+                        <span className="text-[10px] font-mono tracking-wide opacity-90 uppercase">Tap Circle</span>
                       </div>
                     )}
                   </div>
@@ -522,10 +522,10 @@ export function AIAssistantDrawer() {
                       key={idx}
                       className={`w-1 rounded-full transition-all duration-200 ${
                         isSpeaking
-                          ? 'bg-gradient-to-t from-violet-500 to-indigo-400'
+                          ? 'bg-gradient-to-t from-orange-500 to-amber-400'
                           : isListening
-                          ? 'bg-gradient-to-t from-emerald-400 to-teal-300'
-                          : 'bg-white/15'
+                          ? 'bg-gradient-to-t from-emerald-500 to-teal-400 dark:from-emerald-400 dark:to-teal-300'
+                          : 'bg-line dark:bg-white/15'
                       }`}
                       style={{
                         height: (isSpeaking || isListening) ? `${Math.max(6, heightPct * 0.28)}px` : '4px',
@@ -538,48 +538,51 @@ export function AIAssistantDrawer() {
 
               {/* Bottom Section: Quick Topics & Control Dock */}
               <div className="relative z-10 space-y-3 pt-1">
-                {/* One-Tap Voice Topic Pills */}
-                <div className="flex items-center justify-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
+                {/* One-Tap Voice Topic Pills - Wrapped & Zero Scrollbar */}
+                <div 
+                  className="flex flex-wrap items-center justify-center gap-1.5 no-scrollbar text-[11px] font-mono py-0.5"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
                   <button
                     onClick={() => sendMessage("What is Ajay's tech stack and background?")}
                     disabled={isLoading}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-500/10 dark:hover:bg-orange-500/15 transition-all active:scale-95 shadow-sm"
                   >
                     ⚡ Tech Stack
                   </button>
                   <button
                     onClick={() => sendMessage("Tell me about the ElderNest project.")}
                     disabled={isLoading}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-500/10 dark:hover:bg-orange-500/15 transition-all active:scale-95 shadow-sm"
                   >
                     🏆 ElderNest
                   </button>
                   <button
                     onClick={() => sendMessage("What did Ajay do at BrikUp?")}
                     disabled={isLoading}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-500/10 dark:hover:bg-orange-500/15 transition-all active:scale-95 shadow-sm"
                   >
                     💼 BrikUp
                   </button>
                   <button
                     onClick={() => sendMessage("Is Ajay available for hiring?")}
                     disabled={isLoading}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-500/10 dark:hover:bg-orange-500/15 transition-all active:scale-95 shadow-sm"
                   >
                     🤝 Hire
                   </button>
                 </div>
 
                 {/* Bottom Control Bar */}
-                <div className="flex items-center justify-between pt-2 border-t border-white/10">
-                  <span className="text-[10px] font-mono text-neutral-400">
+                <div className="flex items-center justify-between pt-2 border-t border-line dark:border-white/10">
+                  <span className="text-[10px] font-mono text-muted dark:text-neutral-400">
                     Male Voice &bull; Voice Agent
                   </span>
 
                   <button
                     type="button"
                     onClick={() => setActiveMode('chat')}
-                    className="text-[11px] font-mono text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors"
+                    className="text-[11px] font-mono text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 flex items-center gap-1 transition-colors font-medium"
                   >
                     <MessageSquare className="w-3 h-3" />
                     <span>Switch to Text Chat</span>
@@ -592,43 +595,49 @@ export function AIAssistantDrawer() {
                 MODE 2: TEXT CHAT MODE
                ======================================================== */
             <>
-              {/* Quick Prompt Pills */}
-              <div className="p-2.5 border-b border-white/8 bg-white/[0.02] flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
+              {/* Quick Prompt Pills - Clean Smooth Scroll, Zero Scrollbars */}
+              <div 
+                className="p-2.5 border-b border-line dark:border-white/8 bg-line/20 dark:bg-white/[0.02] flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
                 <button
                   onClick={() => sendMessage("What is Ajay's tech stack and background?")}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 transition-colors"
                 >
                   ⚡ Tech Stack
                 </button>
                 <button
                   onClick={() => sendMessage("Tell me about the ElderNest project.")}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 transition-colors"
                 >
                   🏆 ElderNest
                 </button>
                 <button
                   onClick={() => sendMessage("What did Ajay do at BrikUp?")}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 transition-colors"
                 >
                   💼 BrikUp
                 </button>
                 <button
                   onClick={() => sendMessage("Is Ajay available for hiring or freelance projects?")}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-line/30 dark:bg-white/[0.05] border border-line dark:border-white/10 text-ink/80 dark:text-neutral-300 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 transition-colors"
                 >
                   🤝 Hire
                 </button>
               </div>
 
               {/* Chat Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs font-mono">
+              <div 
+                className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs font-mono no-scrollbar"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
                 {messages.map((m) => (
                   <div
                     key={m.id}
                     className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {m.sender === 'assistant' && (
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                         <Bot className="w-3.5 h-3.5" />
                       </div>
                     )}
@@ -637,8 +646,8 @@ export function AIAssistantDrawer() {
                       <div
                         className={`p-3 rounded-2xl leading-relaxed whitespace-pre-wrap ${
                           m.sender === 'user'
-                            ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-br-none shadow-md'
-                            : 'bg-white/[0.07] text-neutral-200 rounded-bl-none border border-white/10'
+                            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-br-none shadow-md'
+                            : 'bg-line/40 dark:bg-white/[0.07] text-ink dark:text-neutral-200 rounded-bl-none border border-line dark:border-white/10'
                         }`}
                       >
                         {m.text}
@@ -657,8 +666,8 @@ export function AIAssistantDrawer() {
                             }}
                             className={`text-[10px] font-mono inline-flex items-center gap-1 px-2 py-0.5 rounded-full border transition-colors ${
                               currentSpeakingId === m.id && isSpeaking
-                                ? 'bg-violet-600 text-white border-violet-500'
-                                : 'bg-white/[0.04] text-neutral-400 hover:text-white hover:border-violet-500 border-white/10'
+                                ? 'bg-orange-500 text-white border-orange-500'
+                                : 'bg-line/30 dark:bg-white/[0.04] text-muted dark:text-neutral-400 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-500 dark:hover:border-orange-500 border-line dark:border-white/10'
                             }`}
                           >
                             {currentSpeakingId === m.id && isSpeaking ? (
@@ -678,7 +687,7 @@ export function AIAssistantDrawer() {
                     </div>
 
                     {m.sender === 'user' && (
-                      <div className="w-6 h-6 rounded-full bg-white/15 text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-line/80 dark:bg-white/15 text-ink dark:text-white flex items-center justify-center shrink-0 mt-0.5">
                         <User className="w-3.5 h-3.5" />
                       </div>
                     )}
@@ -686,8 +695,8 @@ export function AIAssistantDrawer() {
                 ))}
 
                 {isLoading && (
-                  <div className="flex items-center gap-2 text-neutral-400 text-xs font-mono pl-8 py-1">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
+                  <div className="flex items-center gap-2 text-muted dark:text-neutral-400 text-xs font-mono pl-8 py-1">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-orange-500" />
                     <span>Thinking...</span>
                   </div>
                 )}
@@ -696,7 +705,7 @@ export function AIAssistantDrawer() {
               </div>
 
               {/* Input Bar */}
-              <div className="p-3 border-t border-white/10 bg-white/[0.02]">
+              <div className="p-3 border-t border-line dark:border-white/10 bg-line/10 dark:bg-white/[0.02]">
                 <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
                   {/* Mic Button: Clicking opens Voice Agent circle mode! */}
                   {speechSupported && (
@@ -706,10 +715,10 @@ export function AIAssistantDrawer() {
                         setActiveMode('voice');
                         toggleListening();
                       }}
-                      className="p-2 rounded-full border bg-white/[0.06] text-neutral-400 hover:text-white hover:bg-white/[0.1] border-white/10 transition-all"
+                      className="p-2 rounded-full border bg-line/30 dark:bg-white/[0.06] text-muted dark:text-neutral-400 hover:text-orange-500 hover:bg-orange-500/10 border-line dark:border-white/10 transition-all"
                       title="Open Voice Agent (Animated Circle)"
                     >
-                      <Mic className="w-4 h-4 text-violet-400" />
+                      <Mic className="w-4 h-4 text-orange-500" />
                     </button>
                   )}
 
@@ -719,13 +728,13 @@ export function AIAssistantDrawer() {
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Ask about stack, projects, or voice chat..."
                     disabled={isLoading}
-                    className="flex-1 bg-white/[0.06] border border-white/10 rounded-full px-3.5 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-violet-500 transition-colors"
+                    className="flex-1 bg-line/20 dark:bg-white/[0.06] border border-line dark:border-white/10 rounded-full px-3.5 py-2 text-xs text-ink dark:text-white placeholder-muted/60 dark:placeholder-neutral-500 focus:outline-none focus:border-orange-500 transition-colors"
                   />
 
                   <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="p-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 disabled:opacity-40 transition-opacity shrink-0 shadow-md"
+                    className="p-2 rounded-full bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-40 transition-opacity shrink-0 shadow-md shadow-orange-500/25"
                     title="Send message"
                   >
                     <Send className="w-3.5 h-3.5" />

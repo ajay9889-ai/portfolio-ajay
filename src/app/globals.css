@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  /* Default: Dark Obsidian Theme (Calm, Premium, High Contrast) */
+  /* Default: Dark Obsidian Theme with Radiant Solar Orange Accent */
   --color-bg: #0E0E12;
   --color-ink: #ECEBE7;
   --color-text: #ECEBE7;
   --color-muted: #8B8B95;
   --color-line: rgba(236, 235, 231, 0.09);
-  --color-accent: #8B7CFF;
-  --color-accent-glow: rgba(139, 124, 255, 0.35);
+  --color-accent: #FF7A00;
+  --color-accent-glow: rgba(255, 122, 0, 0.35);
 }
 
 [data-theme="light"] {
@@ -19,8 +19,8 @@
   --color-text: #121216;
   --color-muted: #6B6A75;
   --color-line: rgba(18, 18, 22, 0.08);
-  --color-accent: #6C5CE7;
-  --color-accent-glow: rgba(108, 92, 231, 0.25);
+  --color-accent: #F95700;
+  --color-accent-glow: rgba(249, 87, 0, 0.25);
 }
 
 [data-theme="dark"] {
@@ -29,8 +29,8 @@
   --color-text: #ECEBE7;
   --color-muted: #8B8B95;
   --color-line: rgba(236, 235, 231, 0.09);
-  --color-accent: #8B7CFF;
-  --color-accent-glow: rgba(139, 124, 255, 0.35);
+  --color-accent: #FF7A00;
+  --color-accent-glow: rgba(255, 122, 0, 0.35);
 }
 
 * {
@@ -126,38 +126,38 @@ textarea:focus-visible {
   color: #0E0E12;
 }
 
-/* Voice Agent Circle & Orb Keyframe Animations */
+/* Voice Agent Circle & Orb Keyframe Animations - Radiant Orange */
 @keyframes voice-orb-breathe {
   0%, 100% {
     transform: scale(0.97);
-    filter: drop-shadow(0 0 25px rgba(139, 124, 255, 0.35));
+    filter: drop-shadow(0 0 25px rgba(255, 107, 0, 0.45));
   }
   50% {
     transform: scale(1.05);
-    filter: drop-shadow(0 0 45px rgba(139, 124, 255, 0.65));
+    filter: drop-shadow(0 0 50px rgba(255, 122, 0, 0.75));
   }
 }
 
 @keyframes voice-orb-speaking {
   0% {
     transform: scale(0.95);
-    filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.6));
+    filter: drop-shadow(0 0 35px rgba(255, 107, 0, 0.65));
   }
   25% {
     transform: scale(1.12);
-    filter: drop-shadow(0 0 60px rgba(99, 102, 241, 0.8));
+    filter: drop-shadow(0 0 65px rgba(245, 158, 11, 0.85));
   }
   50% {
     transform: scale(1.02);
-    filter: drop-shadow(0 0 45px rgba(168, 85, 247, 0.7));
+    filter: drop-shadow(0 0 45px rgba(255, 107, 0, 0.75));
   }
   75% {
     transform: scale(1.16);
-    filter: drop-shadow(0 0 70px rgba(56, 189, 248, 0.85));
+    filter: drop-shadow(0 0 75px rgba(251, 146, 60, 0.9));
   }
   100% {
     transform: scale(0.95);
-    filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.6));
+    filter: drop-shadow(0 0 35px rgba(255, 107, 0, 0.65));
   }
 }
 
@@ -204,5 +204,17 @@ textarea:focus-visible {
 
 .animate-voice-ripple-3 {
   animation: voice-ripple 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite 1.6s;
+}
+
+/* Hide scrollbars completely across all modern browsers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 

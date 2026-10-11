@@ -33,12 +33,12 @@ export function OrbitCanvas() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.replaceChildren(renderer.domElement);
 
-    // Glowing Lights (Accent #8B7CFF glow)
-    const keyLight = new THREE.PointLight(0x8B7CFF, 4.5, 25);
+    // Glowing Lights (Accent #FF7A00 Solar Orange glow)
+    const keyLight = new THREE.PointLight(0xFF7A00, 4.5, 25);
     keyLight.position.set(3.5, 3.5, 4.5);
     scene.add(keyLight);
 
-    const rimLight = new THREE.PointLight(0x6C5CE7, 3.0, 20);
+    const rimLight = new THREE.PointLight(0xFF5500, 3.0, 20);
     rimLight.position.set(-3.5, -3.0, -2.0);
     scene.add(rimLight);
 
@@ -69,7 +69,7 @@ export function OrbitCanvas() {
 
     // Glowing wireframe cage
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x8B7CFF,
+      color: 0xFF7A00,
       wireframe: true,
       transparent: true,
       opacity: 0.45,
@@ -101,7 +101,7 @@ export function OrbitCanvas() {
     particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
     const particleMat = new THREE.PointsMaterial({
-      color: 0x8B7CFF,
+      color: 0xFF7A00,
       size: 0.07,
       transparent: true,
       opacity: 0.85,

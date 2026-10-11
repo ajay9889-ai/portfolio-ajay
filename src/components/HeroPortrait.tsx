@@ -34,10 +34,10 @@ export function HeroPortrait() {
 
   return (
     <div className="relative w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[460px] lg:max-w-[560px] xl:max-w-[640px] mx-auto flex items-center justify-center select-none my-2 sm:my-0">
-      {/* 1. Behind: Theme-Aware Soft Cosmic Indigo / Violet Orb Backdrop */}
+      {/* 1. Behind: Theme-Aware Soft Solar Amber / Orange Orb Backdrop */}
       <div 
         aria-hidden="true"
-        className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 w-[230px] h-[230px] xs:w-[270px] xs:h-[270px] sm:w-[360px] sm:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[500px] xl:h-[500px] rounded-full bg-gradient-to-tr from-indigo-200/50 via-purple-100/40 to-violet-200/30 border border-indigo-200/40 dark:from-[#1E1B4B]/90 dark:via-[#2A2368]/70 dark:to-[#4338CA]/40 dark:border-indigo-500/20 blur-[1px] pointer-events-none transition-colors duration-400"
+        className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 w-[230px] h-[230px] xs:w-[270px] xs:h-[270px] sm:w-[360px] sm:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[500px] xl:h-[500px] rounded-full bg-gradient-to-tr from-orange-200/40 via-amber-100/30 to-orange-100/20 border border-orange-200/40 dark:from-[#2A1605]/90 dark:via-[#3D1E04]/70 dark:to-[#5E2B06]/40 dark:border-orange-500/20 blur-[1px] pointer-events-none transition-colors duration-400"
       />
 
       {/* 2. Interactive Portrait Layer (100% Transparent Cutout with Cursor Color Reveal) */}
