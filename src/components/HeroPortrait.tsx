@@ -4,7 +4,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 
 export function HeroPortrait() {
-  const [mousePos, setMousePos] = useState({ x: 250, y: 180 });
+  const [mousePos, setMousePos] = useState({ x: 200, y: 160 });
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -29,14 +29,18 @@ export function HeroPortrait() {
     setIsHovered(true);
   }, []);
 
-  // Soft feathered reveal mask centered at cursor position
-  const revealMask = isHovered
-    ? `radial-gradient(circle 200px at ${mousePos.x}px ${mousePos.y}px, black 35%, rgba(0,0,0,0.5) 65%, transparent 100%)`
-    : `radial-gradient(circle 120px at 50% 32%, black 20%, rgba(0,0,0,0.3) 55%, transparent 100%)`;
+  // Soft feathered reveal mask that illuminates full color wherever the cursor moves
+  const revealMask = `radial-gradient(circle 180px at ${mousePos.x}px ${mousePos.y}px, black 35%, rgba(0,0,0,0.5) 65%, transparent 100%)`;
 
   return (
-    <div className="relative w-full max-w-[440px] sm:max-w-[520px] md:max-w-[580px] mx-auto flex items-center justify-center select-none">
-      {/* Enlarged Portrait with bottom cropped/dissolved to fit the screen */}
+    <div className="relative w-full max-w-[520px] lg:max-w-[560px] mx-auto flex items-center justify-center select-none">
+      {/* 1. Behind: Theme-Aware Soft Cosmic Indigo / Violet Orb Backdrop */}
+      <div 
+        aria-hidden="true"
+        className="absolute top-6 sm:top-10 left-8 sm:left-14 w-[300px] h-[300px] sm:w-[370px] sm:h-[370px] rounded-full bg-gradient-to-tr from-indigo-200/50 via-purple-100/40 to-violet-200/30 border border-indigo-200/40 dark:from-[#1E1B4B]/90 dark:via-[#2A2368]/70 dark:to-[#4338CA]/40 dark:border-indigo-500/20 blur-[1px] pointer-events-none transition-colors duration-400"
+      />
+
+      {/* 2. Interactive Portrait Layer (100% Transparent Cutout with Cursor Color Reveal) */}
       <div
         ref={containerRef}
         onMouseMove={handleMouseMove}
@@ -44,16 +48,16 @@ export function HeroPortrait() {
         onMouseLeave={() => setIsHovered(false)}
         onTouchMove={handleTouchMove}
         onTouchStart={() => setIsHovered(true)}
-        className="relative w-full h-[360px] sm:h-[420px] md:h-[460px] cursor-pointer overflow-hidden"
+        className="relative z-10 w-[350px] sm:w-[410px] h-[440px] sm:h-[500px] cursor-pointer overflow-hidden"
         style={{
           maskImage: 'linear-gradient(to bottom, black 82%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to bottom, black 82%, transparent 100%)',
         }}
       >
-        {/* BASE: Black & White Portrait (enlarged, top-anchored, bottom cropped) */}
-        <div className="absolute inset-0 w-full h-full flex items-start justify-center pointer-events-none">
+        {/* BASE: Black & White Transparent Portrait (Default state) */}
+        <div className="absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none">
           <Image
-            src="/ajay-bw.webp"
+            src="/ajay-cutout-bw.webp"
             alt="Ajay A - Black and White"
             width={800}
             height={1067}
@@ -62,16 +66,17 @@ export function HeroPortrait() {
           />
         </div>
 
-        {/* TOP LAYER: Color Image revealed seamlessly as the cursor moves */}
+        {/* TOP LAYER: Color Image ONLY revealed as cursor moves over the image */}
         <div 
-          className="absolute inset-0 w-full h-full flex items-start justify-center pointer-events-none"
+          className="absolute inset-0 w-full h-full flex items-end justify-center pointer-events-none transition-opacity duration-300 ease-out"
           style={{
+            opacity: isHovered ? 1 : 0,
             maskImage: revealMask,
             WebkitMaskImage: revealMask,
           }}
         >
           <Image
-            src="/ajay-color.webp"
+            src="/ajay-cutout-color.webp"
             alt="Ajay A - Color"
             width={800}
             height={1067}
@@ -79,6 +84,43 @@ export function HeroPortrait() {
             className="w-full h-full object-cover object-top"
           />
         </div>
+      </div>
+
+      {/* 3. Floating Right Badge: Curved Arrow & Bullet Points */}
+      <div className="absolute top-16 -right-2 sm:-right-8 z-20 hidden sm:flex items-start gap-2 pointer-events-none">
+        {/* Curved Hand-Drawn Style Arrow */}
+        <svg 
+          className="w-8 h-8 text-muted/60 mt-1 shrink-0 -rotate-6" 
+          viewBox="0 0 40 40" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="1.5"
+        >
+          <path d="M 6 26 C 14 12, 24 10, 34 16" strokeLinecap="round" />
+          <path d="M 28 13 L 34 16 L 31 22" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+
+        <ul className="space-y-1.5 text-xs font-mono text-ink/90 bg-bg/85 backdrop-blur-md p-2 rounded-lg border border-line shadow-sm">
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            <span>Developer</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            <span>Problem Solver</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            <span>Lifelong Learner</span>
+          </li>
+        </ul>
+      </div>
+
+      {/* 4. Cursive Script Signature: Ajay A */}
+      <div className="absolute bottom-12 right-2 sm:right-0 z-20 pointer-events-none -rotate-6">
+        <span className="font-signature text-3xl sm:text-5xl text-ink dark:text-white/95 font-medium tracking-wide drop-shadow-md">
+          Ajay A
+        </span>
       </div>
     </div>
   );

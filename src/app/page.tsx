@@ -7,7 +7,6 @@ import { SkillsSection } from '@/components/SkillsSection';
 import { WorkSection } from '@/components/WorkSection';
 import { ExperienceSection } from '@/components/ExperienceSection';
 import { ContactSection } from '@/components/ContactSection';
-import { FloatingControls } from '@/components/FloatingControls';
 import { CommandPalette } from '@/components/CommandPalette';
 import { AIAssistantDrawer } from '@/components/AIAssistantDrawer';
 import { Footer } from '@/components/Footer';
@@ -26,7 +25,6 @@ export default function HomePage() {
         <ExperienceSection />
         <ContactSection />
       </main>
-      <FloatingControls />
       <CommandPalette />
       <AIAssistantDrawer />
       <Footer />

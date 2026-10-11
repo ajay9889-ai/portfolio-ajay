@@ -2,105 +2,69 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
-import { PROFILE } from '@/data/portfolioData';
+import { ArrowRight, ArrowUpRight, MapPin } from 'lucide-react';
 import { HeroPortrait } from './HeroPortrait';
 
 export function HeroSection() {
   return (
-    <section className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-between px-6 sm:px-10 max-w-7xl mx-auto py-3 sm:py-5 overflow-hidden">
-      {/* Top Status & Persona Filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-muted pt-1 hairline-b pb-3">
-        <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-ink font-medium">Ajay A</span>
-          <span>•</span>
-          <span className="text-emerald-400 font-medium">Available for Freelancing</span>
-          <span className="hidden md:inline">•</span>
-          <span className="hidden md:inline">Bengaluru, India</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-muted/70 hidden md:inline">Path:</span>
-          <button
-            onClick={() => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-2.5 py-0.5 rounded-full border border-line hover:border-accent hover:text-accent transition-colors"
-          >
-            I'm hiring
-          </button>
-          <button
-            onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-2.5 py-0.5 rounded-full border border-line hover:border-accent hover:text-accent transition-colors"
-          >
-            I'm a developer
-          </button>
-          <button
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-2.5 py-0.5 rounded-full border border-line hover:border-accent hover:text-accent transition-colors"
-          >
-            I have a project
-          </button>
-        </div>
-      </div>
-
-      {/* Main Hero: Image TOP -> Text BOTTOM */}
-      <div className="flex flex-col items-center text-center my-auto py-2 sm:py-3 w-full">
-        {/* 1. TOP: Enlarged Portrait (Cropped at bottom to fit the screen) */}
-        <div className="w-full flex justify-center mb-2 sm:mb-4">
-          <HeroPortrait />
-        </div>
-
-        {/* 2. BOTTOM: Status Badge, Name, Title, Subtext & Action Buttons */}
-        <div className="space-y-2.5 sm:space-y-3.5 flex flex-col items-center max-w-3xl z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
+    <section className="relative w-full min-h-[calc(100vh-5rem)] flex items-center px-6 sm:px-10 max-w-7xl mx-auto py-6 sm:py-10 overflow-hidden">
+      {/* 2-Column Editorial Grid matching screenshot */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center w-full">
+        {/* Left Column: Heading, Bio & CTAs */}
+        <div className="lg:col-span-7 space-y-6 sm:space-y-7 z-10">
+          {/* 1. Availability Status Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/35 bg-emerald-950/40 text-emerald-400 text-xs font-mono shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Available for Freelancing &amp; Projects</span>
           </div>
 
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-[-0.04em] text-ink leading-[0.92]">
-            Ajay A
+          {/* 2. Role Tracker */}
+          <span className="text-xs uppercase tracking-widest text-muted/80 font-mono block">
+            FULL-STACK DEVELOPER &bull; AI SYSTEMS
+          </span>
+
+          {/* 3. Main Headline */}
+          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.03em] text-ink leading-[1.02]">
+            Hi, I&apos;m{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-indigo-400 to-purple-300">
+              Ajay A
+            </span>
           </h1>
 
-          <p className="font-mono text-xs sm:text-sm uppercase tracking-widest text-accent font-medium">
-            Full-Stack Developer &bull; AI Systems
+          {/* 4. Subtext / Bio */}
+          <p className="text-lg sm:text-xl text-muted/90 font-normal max-w-xl leading-relaxed">
+            I build web products from the interface to the API, and work on AI-powered solutions.
           </p>
 
-          <p className="text-sm sm:text-base md:text-lg text-muted font-normal max-w-xl leading-relaxed">
-            {PROFILE.subtext}
-          </p>
+          {/* 5. Location Tag */}
+          <div className="flex items-center gap-2 text-sm font-mono text-muted/80 pt-1">
+            <MapPin className="w-4 h-4 text-accent shrink-0" />
+            <span>Bengaluru, India</span>
+          </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-1">
+          {/* 6. Action Buttons */}
+          <div className="flex flex-wrap items-center gap-4 pt-2">
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-accent text-white font-medium text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-accent hover:bg-accent/90 text-white font-medium text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 shadow-accent/20"
             >
-              Let's talk
+              <span>Let&apos;s talk</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="#work"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink transition-colors px-4 py-2"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-line hover:border-ink/40 bg-bg/40 backdrop-blur-sm text-ink font-medium text-sm transition-all duration-200 hover:-translate-y-0.5"
             >
-              <span>view selected work</span>
-              <ArrowUpRight className="w-4 h-4" />
+              <span>View my work</span>
+              <ArrowUpRight className="w-4 h-4 opacity-70" />
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Hero Bar: Scroll Hint */}
-      <div className="flex items-center justify-between text-xs text-muted font-mono hairline-t pt-3">
-        <span className="text-[11px] text-muted/60">
-          Move cursor over portrait to reveal color
-        </span>
-
-        <Link
-          href="#about"
-          className="flex items-center gap-2 hover:text-accent transition-colors"
-        >
-          <span>scroll to explore</span>
-          <ArrowDown className="w-3.5 h-3.5" />
-        </Link>
+        {/* Right Column: Cosmic Orb + Portrait + Signature + Bullets */}
+        <div className="lg:col-span-5 w-full flex items-center justify-center relative">
+          <HeroPortrait />
+        </div>
       </div>
     </section>
   );

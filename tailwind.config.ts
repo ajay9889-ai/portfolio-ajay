@@ -24,6 +24,7 @@ const config: Config = {
         display: ["'Syne'", "sans-serif"],
         heading: ["'Syne'", "sans-serif"],
         body: ["'Instrument Sans'", "sans-serif"],
+        signature: ["'Caveat'", "cursive"],
       },
       letterSpacing: {
         heading: "-0.04em",

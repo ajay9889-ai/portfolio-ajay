@@ -30,32 +30,37 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
         <Link 
           href="/" 
-          className="font-display text-2xl font-bold tracking-tight text-ink hover:text-accent transition-colors"
+          className="font-display text-2xl font-bold tracking-tight text-ink hover:text-accent transition-colors flex items-center gap-1"
         >
-          Ajay A
+          <span>Ajay A</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block ml-0.5" />
         </Link>
 
-        <nav className="flex items-center gap-6 sm:gap-10 text-sm font-medium text-muted">
-          <Link href="#work" className="hover:text-ink transition-colors">
-            work
+        <nav className="flex items-center gap-6 sm:gap-8 text-sm font-medium text-muted">
+          <Link href="/" className="text-ink relative py-1 transition-colors">
+            <span>Home</span>
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-ink rounded-full" />
           </Link>
           <Link href="#about" className="hover:text-ink transition-colors">
-            about
+            About
           </Link>
           <Link href="#skills" className="hover:text-ink transition-colors">
-            skills
+            Skills
           </Link>
           <Link href="#experience" className="hover:text-ink transition-colors">
-            experience
+            Experience
+          </Link>
+          <Link href="#work" className="hover:text-ink transition-colors">
+            Projects
           </Link>
           <Link href="#contact" className="hover:text-accent transition-colors">
-            contact
+            Contact
           </Link>
 
           <button
             onClick={toggleTheme}
             aria-label="Toggle light/dark theme"
-            className="p-2 rounded-full border border-line text-muted hover:text-ink transition-colors"
+            className="p-2 rounded-full border border-line text-muted hover:text-ink transition-colors ml-2"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-accent" />}
           </button>
