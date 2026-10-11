@@ -1,0 +1,50 @@
+{
+  "experience": [
+    {
+      "id": "brikup-intern",
+      "role": "Software Development Engineer Intern",
+      "company": "BrikUp",
+      "period": "Internship",
+      "location": "Bengaluru, India",
+      "type": "Internship",
+      "highlights": [
+        "Built and optimized production features using React.js, Next.js, JavaScript, and Tailwind CSS.",
+        "Integrated REST APIs for data retrieval, authentication, user profiles, bookings, and reviews.",
+        "Debugged complex API and data-rendering issues across multiple application views.",
+        "Ran functional testing across login, onboarding, profile, booking, and review flows.",
+        "Used Git/GitHub with branch-based collaborative development workflow."
+      ],
+      "technologies": ["React.js", "Next.js", "JavaScript", "Tailwind CSS", "REST APIs", "Git", "GitHub"],
+      "order": 0
+    },
+    {
+      "id": "mca-bmsit",
+      "role": "MCA — Master of Computer Applications",
+      "company": "BMS Institute of Technology and Management",
+      "period": "2023 — 2025",
+      "location": "Bengaluru, India",
+      "type": "Education",
+      "highlights": [
+        "Specialized in Software Engineering, Full-Stack Web Architecture, and Scalable Databases.",
+        "Won 1st Place at HackVerse 2025 Hackathon with ElderNest.",
+        "Graduated with 8.5 CGPA."
+      ],
+      "technologies": ["React.js", "Node.js", "Next.js", "Python", "PostgreSQL", "MongoDB"],
+      "order": 1
+    },
+    {
+      "id": "bca-gfgc",
+      "role": "BCA — Bachelor of Computer Applications",
+      "company": "Government First Grade College, Sorab",
+      "period": "2020 — 2023",
+      "location": "Sorab, Karnataka, India",
+      "type": "Education",
+      "highlights": [
+        "Comprehensive grounding in Computer Science, C, Java, Python, Web Basics, and Database Management.",
+        "Graduated with 8.2 CGPA."
+      ],
+      "technologies": ["C", "Java", "Python", "HTML", "CSS", "MySQL"],
+      "order": 2
+    }
+  ]
+}

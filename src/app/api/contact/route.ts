@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { addContact } from "@/lib/adminData";
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -85,6 +87,13 @@ export async function POST(req: NextRequest) {
       });
     } catch (backendErr) {
       // Non-blocking
+    }
+
+    // Persist to admin dashboard store
+    try {
+      addContact({ name, email, subject: 'Portfolio Contact', message });
+    } catch {
+      // Non-blocking — don't fail the response if file write fails
     }
 
     return NextResponse.json({

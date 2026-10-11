@@ -1,0 +1,19 @@
+{
+  "profile": {
+    "name": "Ajay A",
+    "title": "Full-Stack Developer & AI Systems Engineer",
+    "tagline": "Building high-impact web products from the interface to the API, from Bengaluru.",
+    "bio": "MCA graduate who ships React and Next.js applications, wires them to scalable APIs, and engineers AI-powered features. HackVerse 2025 winner. Intern at BrikUp.",
+    "location": "Bengaluru, Karnataka, India",
+    "availability": "Available for full-time roles, contracts & freelance projects",
+    "email": "ajayhasrb123@gmail.com",
+    "github": "https://github.com/ajay9889-ai",
+    "linkedin": "https://linkedin.com/in/ajay-a",
+    "stats": [
+      { "label": "MCA CGPA", "value": "8.5" },
+      { "label": "Projects Built", "value": "3+" },
+      { "label": "Hackathon Win", "value": "1st 🏆" },
+      { "label": "Available", "value": "Now" }
+    ]
+  }
+}

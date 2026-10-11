@@ -29,6 +29,12 @@ export function Footer() {
             LinkedIn
           </a>
           <Link
+            href="/admin"
+            className="hover:text-accent transition-colors flex items-center gap-1 opacity-60 hover:opacity-100"
+          >
+            <span>Admin</span>
+          </Link>
+          <Link
             href="#"
             className="hover:text-accent transition-colors flex items-center gap-1"
           >

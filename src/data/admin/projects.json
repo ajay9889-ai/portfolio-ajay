@@ -1,0 +1,58 @@
+{
+  "projects": [
+    {
+      "id": "eldernest",
+      "title": "ElderNest",
+      "slug": "eldernest",
+      "badge": "HackVerse 2025 — 1st Place 🏆",
+      "tagline": "Empathetic, WCAG-compliant assistive web platform for elderly users.",
+      "description": "ElderNest is an empathetic assistive web platform designed for senior citizens. It pairs high-contrast WCAG-compliant design with peer community spaces and immediate one-tap emergency SOS assistance dispatching.",
+      "category": "Full Stack",
+      "technologies": ["React.js", "Next.js", "Tailwind CSS", "REST APIs", "Node.js"],
+      "featured": true,
+      "metrics": [
+        { "label": "Hackathon Rank", "value": "1st Place" },
+        { "label": "Accessibility", "value": "WCAG AAA" }
+      ],
+      "githubUrl": "https://github.com/ajay9889-ai",
+      "liveUrl": "",
+      "order": 0
+    },
+    {
+      "id": "wisdomplay",
+      "title": "WisdomPlay",
+      "slug": "wisdomplay",
+      "badge": "",
+      "tagline": "Multilingual educational Unity game with dynamic JSON-driven quizzes and audio cues.",
+      "description": "An interactive educational gaming environment designed to teach core curriculum concepts across multiple Indian regional languages via dynamic JSON-driven questions, 2D animation controllers, and audio cues.",
+      "category": "Game Dev",
+      "technologies": ["Unity", "C#", "JSON", "Audio Systems", "Animation Controller"],
+      "featured": true,
+      "metrics": [
+        { "label": "Languages", "value": "Multi-lingual" },
+        { "label": "Content System", "value": "JSON-driven" }
+      ],
+      "githubUrl": "https://github.com/ajay9889-ai",
+      "liveUrl": "",
+      "order": 1
+    },
+    {
+      "id": "smart-attendance-system",
+      "title": "Smart Attendance System",
+      "slug": "smart-attendance-system",
+      "badge": "",
+      "tagline": "IoT/RFID automated attendance pipeline with sub-400ms scans and auto-reports.",
+      "description": "Hardware-to-cloud automated attendance pipeline utilizing RFID scanners, Python processing bridge, MySQL database logging, and automated CSV/Excel reports.",
+      "category": "Systems & IoT",
+      "technologies": ["Python", "RFID Hardware", "MySQL", "Node.js", "REST APIs"],
+      "featured": true,
+      "metrics": [
+        { "label": "Scan Latency", "value": "< 400ms" },
+        { "label": "Reports", "value": "Auto CSV/Excel" }
+      ],
+      "githubUrl": "https://github.com/ajay9889-ai",
+      "liveUrl": "",
+      "order": 2
+    }
+  ]
+}
