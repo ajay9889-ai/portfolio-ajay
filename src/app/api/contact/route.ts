@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { addContact } from "@/lib/adminData";
 
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -15,13 +14,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 1. Instantly persist to admin dashboard store
+    try {
+      addContact({ name, email, subject: "Portfolio Contact", message });
+    } catch (storeErr) {
+      console.error("[Contact Form] Failed to save contact to admin store:", storeErr);
+    }
+
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
     const notifyEmail = process.env.OWNER_NOTIFY_EMAIL || smtpUser || "ajayhasrb123@gmail.com";
 
     let emailSent = false;
 
-    // Send direct Gmail notification if credentials exist
+    // 2. Send direct Gmail notification if credentials exist (with strict 6s timeout)
     if (smtpUser && smtpPass) {
       try {
         const transporter = nodemailer.createTransport({
@@ -32,6 +38,9 @@ export async function POST(req: NextRequest) {
             user: smtpUser,
             pass: smtpPass,
           },
+          connectionTimeout: 5000,
+          greetingTimeout: 5000,
+          socketTimeout: 5000,
         });
 
         const htmlBody = `
@@ -73,33 +82,29 @@ export async function POST(req: NextRequest) {
         emailSent = true;
         console.log(`[Contact Form] ✅ Email delivered to ${notifyEmail}`);
       } catch (mailErr) {
-        console.error("[Contact Form] ❌ Nodemailer delivery error:", mailErr);
+        console.error("[Contact Form] ⚠️ Nodemailer delivery error:", mailErr);
       }
     }
 
-    // Also forward to Render backend if configured
+    // 3. Non-blocking forward to Render backend (never blocks user response or causes timeout)
     const backendUrl = process.env.BACKEND_API_URL || "https://portfolio-backend-yxfu.onrender.com/api/v1/contact";
     try {
-      await fetch(backendUrl, {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 2500);
+      fetch(backendUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),
-      });
-    } catch (backendErr) {
-      // Non-blocking
-    }
-
-    // Persist to admin dashboard store
-    try {
-      addContact({ name, email, subject: 'Portfolio Contact', message });
+        signal: controller.signal,
+      }).catch(() => {}).finally(() => clearTimeout(timer));
     } catch {
-      // Non-blocking — don't fail the response if file write fails
+      // Non-blocking
     }
 
     return NextResponse.json({
       success: true,
       emailSent,
-      message: `Thank you, ${name}! Your message was successfully dispatched to my inbox. I typically respond within 24 hours.`,
+      message: `Thank you, ${name}! Your message was successfully received. I typically respond within 24 hours.`,
       data: {
         id: "msg_" + Math.random().toString(36).substring(2, 10),
         receivedAt: new Date().toISOString(),

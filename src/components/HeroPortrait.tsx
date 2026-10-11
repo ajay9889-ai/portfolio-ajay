@@ -40,55 +40,6 @@ export function HeroPortrait() {
         className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 w-[230px] h-[230px] xs:w-[270px] xs:h-[270px] sm:w-[360px] sm:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[500px] xl:h-[500px] rounded-full bg-gradient-to-tr from-orange-200/40 via-amber-100/30 to-orange-100/20 border border-orange-200/40 dark:from-[#2A1605]/90 dark:via-[#3D1E04]/70 dark:to-[#5E2B06]/40 dark:border-orange-500/20 blur-[1px] pointer-events-none transition-colors duration-400"
       />
 
-      {/* 💭 Floating Thought Cloud Message Beside Photo */}
-      <div className="absolute -top-7 sm:top-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-left-6 lg:-left-14 xl:-left-20 z-30 animate-cloud-float pointer-events-auto">
-        <div className="relative inline-flex flex-col items-center sm:items-end group cursor-default">
-          {/* Main Cloud Body */}
-          <div className="relative flex items-center gap-2 px-3.5 py-2 sm:px-4.5 sm:py-2.5 rounded-[26px] bg-[#101016]/95 backdrop-blur-md border border-white/[0.14] shadow-2xl shadow-black/60 transition-transform duration-300 group-hover:scale-105 group-hover:border-emerald-500/40">
-            {/* Top Cloud Puffs */}
-            <span
-              aria-hidden="true"
-              className="absolute -top-3 left-6 w-8 h-6 rounded-full bg-[#101016]/95 border-t border-l border-white/[0.14] pointer-events-none"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute -top-4.5 left-16 sm:left-18 w-12 h-7.5 rounded-full bg-[#101016]/95 border-t border-white/[0.14] pointer-events-none"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute -top-3 right-7 sm:right-9 w-9 h-6 rounded-full bg-[#101016]/95 border-t border-r border-white/[0.14] pointer-events-none"
-            />
-
-            {/* Left & Right Cloud Side Puffs */}
-            <span
-              aria-hidden="true"
-              className="absolute -left-1.5 top-2 w-5 h-5 rounded-full bg-[#101016]/95 border-l border-white/[0.14] pointer-events-none"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute -right-1.5 top-2 w-5 h-5 rounded-full bg-[#101016]/95 border-r border-white/[0.14] pointer-events-none"
-            />
-
-            {/* Live Status Beacon */}
-            <span className="relative z-10 flex h-2.5 w-2.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
-            </span>
-
-            {/* Cloud Message Text */}
-            <span className="relative z-10 text-[11px] sm:text-xs font-mono font-medium tracking-tight text-emerald-400 whitespace-nowrap drop-shadow-sm">
-              Available for Freelancing &amp; Projects
-            </span>
-          </div>
-
-          {/* Thought Cloud Tail: 3 circles descending toward Ajay */}
-          <div className="relative mr-6 sm:mr-10 flex flex-col items-center pointer-events-none -mt-0.5 space-y-1">
-            <div className="w-3.5 h-3.5 rounded-full bg-[#101016]/95 border border-white/[0.14] shadow-sm" />
-            <div className="w-2.5 h-2.5 rounded-full bg-[#101016]/95 border border-white/[0.14] shadow-sm translate-x-1" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[#101016]/95 border border-white/[0.14] shadow-sm translate-x-2" />
-          </div>
-        </div>
-      </div>
 
       {/* 2. Interactive Portrait Layer (100% Transparent Cutout with Cursor Color Reveal) */}
       <div
