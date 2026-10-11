@@ -5,7 +5,7 @@ import { PROFILE } from '@/data/portfolioData';
 
 export function Footer() {
   return (
-    <footer className="py-16 px-6 sm:px-10 max-w-7xl mx-auto text-xs text-muted font-mono space-y-6">
+    <footer className="py-10 sm:py-12 px-6 sm:px-10 max-w-7xl mx-auto text-xs text-muted font-mono space-y-6">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <span>© {new Date().getFullYear()} {PROFILE.name} — Bengaluru, India</span>

@@ -6,17 +6,17 @@ import { ProjectReactions } from '@/components/ProjectReactions';
 
 export function WorkSection() {
   return (
-    <section id="work" className="py-28 sm:py-36 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-4">
+    <section id="work" className="py-14 sm:py-20 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
         <div>
-          <span className="text-xs uppercase tracking-widest text-muted font-mono mb-4 block">
+          <span className="text-xs uppercase tracking-widest text-muted font-mono mb-3 block">
             work
           </span>
-          <h2 className="font-display text-4xl sm:text-6xl font-bold tracking-[-0.04em] text-ink">
+          <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-[-0.04em] text-ink">
             Selected projects.
           </h2>
         </div>
-        <p className="text-sm text-muted max-w-xs">
+        <p className="text-xs sm:text-sm text-muted max-w-xs">
           Tap any emoji to leave a live reaction; click to open the case study.
         </p>
       </div>
@@ -25,7 +25,7 @@ export function WorkSection() {
         {PROJECTS.map((project) => (
           <div
             key={project.id}
-            className="work-row group relative py-10 sm:py-14 px-4 sm:px-6 transition-all duration-300"
+            className="work-row group relative py-6 sm:py-8 px-3 sm:px-5 transition-all duration-300"
           >
             <div className="relative z-10 flex flex-col md:flex-row md:items-baseline justify-between gap-6">
               <Link

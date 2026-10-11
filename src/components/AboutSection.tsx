@@ -10,9 +10,9 @@ export function AboutSection() {
   ];
 
   return (
-    <section id="about" className="py-28 sm:py-36 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
+    <section id="about" className="py-14 sm:py-20 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
       <div className="max-w-4xl">
-        <span className="text-xs uppercase tracking-widest text-muted font-mono mb-8 block">
+        <span className="text-xs uppercase tracking-widest text-muted font-mono mb-4 block">
           about
         </span>
 

@@ -72,15 +72,15 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-28 sm:py-36 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-16 items-start">
+    <section id="contact" className="py-14 sm:py-20 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
         {/* Left Column */}
-        <div className="lg:col-span-5 space-y-8">
+        <div className="lg:col-span-5 space-y-6">
           <div>
-            <span className="text-xs uppercase tracking-widest text-muted font-mono block mb-3">
+            <span className="text-xs uppercase tracking-widest text-muted font-mono block mb-2">
               contact
             </span>
-            <h2 className="font-display text-5xl sm:text-7xl font-bold tracking-[-0.04em] text-ink leading-[0.9]">
+            <h2 className="font-display text-4xl sm:text-6xl font-bold tracking-[-0.04em] text-ink leading-[0.9]">
               Let's talk.
             </h2>
           </div>

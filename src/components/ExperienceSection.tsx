@@ -6,12 +6,12 @@ export function ExperienceSection() {
   const education = TIMELINE.filter((item) => item.type === 'education');
 
   return (
-    <section id="experience" className="py-28 sm:py-36 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
-      <div className="mb-16">
-        <span className="text-xs uppercase tracking-widest text-muted font-mono mb-4 block">
+    <section id="experience" className="py-14 sm:py-20 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
+      <div className="mb-10">
+        <span className="text-xs uppercase tracking-widest text-muted font-mono mb-3 block">
           background
         </span>
-        <h2 className="font-display text-4xl sm:text-6xl font-bold tracking-[-0.04em] text-ink">
+        <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-[-0.04em] text-ink">
           Experience & education.
         </h2>
       </div>

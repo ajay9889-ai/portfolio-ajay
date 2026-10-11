@@ -3,12 +3,12 @@ import { SKILL_GROUPS } from '@/data/portfolioData';
 
 export function SkillsSection() {
   return (
-    <section id="skills" className="py-28 sm:py-36 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
-      <div className="mb-14">
-        <span className="text-xs uppercase tracking-widest text-muted font-mono mb-4 block">
+    <section id="skills" className="py-14 sm:py-20 px-6 sm:px-10 max-w-7xl mx-auto hairline-b">
+      <div className="mb-8">
+        <span className="text-xs uppercase tracking-widest text-muted font-mono mb-3 block">
           skills
         </span>
-        <h2 className="font-display text-4xl sm:text-5xl font-bold tracking-[-0.04em] text-ink">
+        <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-[-0.04em] text-ink">
           Core capabilities.
         </h2>
       </div>
