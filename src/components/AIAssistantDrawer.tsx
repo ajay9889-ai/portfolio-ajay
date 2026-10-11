@@ -13,6 +13,7 @@ interface ChatMessage {
 
 export function AIAssistantDrawer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeMode, setActiveMode] = useState<'voice' | 'chat'>('voice');
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorNotice, setErrorNotice] = useState<string | null>(null);
@@ -21,7 +22,7 @@ export function AIAssistantDrawer() {
     {
       id: 'welcome',
       sender: 'assistant',
-      text: "Hello! I am Ajay's AI Voice & Chat Assistant. Feel free to speak or type any questions about Ajay's full-stack tech stack, his BrikUp internship, award-winning projects (ElderNest, WisdomPlay), or hiring availability.",
+      text: "Hello! I am Ajay's AI Voice & Chat Assistant. Feel free to speak or ask any questions about Ajay's full-stack tech stack, his BrikUp internship, award-winning projects (ElderNest, WisdomPlay), or hiring availability.",
     },
   ]);
 
@@ -92,7 +93,7 @@ export function AIAssistantDrawer() {
   // Auto-scroll chat to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, activeMode]);
 
   // Speak AI response with chosen Male Voice
   const speakText = (text: string, messageId?: string) => {
@@ -183,9 +184,9 @@ export function AIAssistantDrawer() {
       recognition.onerror = (event: any) => {
         setIsListening(false);
         if (event.error === 'not-allowed') {
-          setErrorNotice('Microphone access denied. Please allow microphone in browser bar.');
+          setErrorNotice('Microphone access denied. Please allow microphone in browser.');
         } else if (event.error === 'no-speech') {
-          setErrorNotice('No speech detected. Please tap mic and speak again.');
+          setErrorNotice('No speech detected. Tap the animated circle to speak again.');
         } else {
           setErrorNotice(`Microphone error: ${event.error}`);
         }
@@ -199,7 +200,7 @@ export function AIAssistantDrawer() {
       recognition.start();
     } catch (err: any) {
       setIsListening(false);
-      setErrorNotice('Could not start microphone. Check your browser settings.');
+      setErrorNotice('Could not start microphone. Check your browser permissions.');
     }
   };
 
@@ -282,36 +283,36 @@ export function AIAssistantDrawer() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xl shadow-indigo-500/25 flex items-center gap-2.5 text-xs font-mono transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20"
-        title="Open Ajay's Floating AI Assistant"
+        title="Open Ajay's Floating AI Voice Agent"
       >
         <div className="relative">
-          <Sparkles className="w-4 h-4 text-white animate-pulse" />
+          <Radio className="w-4 h-4 text-white animate-pulse" />
           {isSpeaking && (
             <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           )}
         </div>
         <span className="font-medium tracking-wide">
-          {isOpen ? 'Close Assistant' : 'AI Assistant'}
+          {isOpen ? 'Close Assistant' : 'AI Voice Agent'}
         </span>
         <span className="w-2 h-2 rounded-full bg-emerald-400" />
       </button>
 
       {/* 2. Floating AI Assistant Popover Card */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[550px] max-h-[82vh] rounded-3xl bg-[#121218]/95 dark:bg-[#0D0D12]/95 border border-white/12 shadow-[0_25px_70px_rgba(0,0,0,0.55)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[410px] h-[560px] max-h-[84vh] rounded-3xl bg-[#121218]/95 dark:bg-[#0D0D12]/95 border border-white/12 shadow-[0_25px_70px_rgba(0,0,0,0.55)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           {/* Card Header */}
-          <div className="p-4 border-b border-white/10 bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
+          <div className="p-3.5 border-b border-white/10 bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shadow-inner">
-                <Bot className="w-4 h-4" />
+                <Radio className="w-4 h-4" />
                 {isSpeaking && (
                   <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
                 )}
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-display font-bold text-sm text-white">Ajay's Assistant</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                  <span className="font-display font-bold text-sm text-white">Ajay&apos;s Assistant</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                     Live
                   </span>
                 </div>
@@ -324,7 +325,7 @@ export function AIAssistantDrawer() {
                       const match = voices.find((v) => v.name === e.target.value);
                       if (match) setSelectedVoice(match);
                     }}
-                    className="bg-transparent text-[10px] font-mono text-violet-400 border-b border-violet-500/30 focus:outline-none cursor-pointer max-w-[130px] truncate"
+                    className="bg-transparent text-[10px] font-mono text-violet-400 border-b border-violet-500/30 focus:outline-none cursor-pointer max-w-[120px] truncate"
                   >
                     {availableMaleVoices.length > 0 ? (
                       availableMaleVoices.map((v) => (
@@ -340,7 +341,38 @@ export function AIAssistantDrawer() {
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            {/* Header Right Actions */}
+            <div className="flex items-center gap-1.5">
+              {/* Mode Toggle Switcher */}
+              <div className="flex items-center p-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[10px] font-mono">
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('voice')}
+                  className={`px-2 py-1 rounded-full transition-all flex items-center gap-1 ${
+                    activeMode === 'voice'
+                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium shadow-sm'
+                      : 'text-neutral-400 hover:text-white'
+                  }`}
+                  title="Voice Agent (Animated circle mode)"
+                >
+                  <Radio className="w-2.5 h-2.5" />
+                  <span>Voice</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMode('chat')}
+                  className={`px-2 py-1 rounded-full transition-all flex items-center gap-1 ${
+                    activeMode === 'chat'
+                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium shadow-sm'
+                      : 'text-neutral-400 hover:text-white'
+                  }`}
+                  title="Text Chat mode"
+                >
+                  <MessageSquare className="w-2.5 h-2.5" />
+                  <span>Chat</span>
+                </button>
+              </div>
+
               {/* Mute / Unmute Voice Toggle */}
               <button
                 onClick={() => {
@@ -384,171 +416,321 @@ export function AIAssistantDrawer() {
             </div>
           )}
 
-          {/* Voice Wave Visualizer when Speaking or Listening */}
-          {(isSpeaking || isListening) && (
-            <div className="bg-violet-500/15 border-b border-violet-500/30 px-3.5 py-1.5 flex items-center justify-between text-xs font-mono text-violet-300">
-              <div className="flex items-center gap-2">
-                <Radio className="w-3 h-3 animate-pulse" />
-                <span className="text-[11px]">{isListening ? 'Listening to voice...' : 'Speaking aloud...'}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-1 h-2.5 bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1 h-4 bg-violet-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1 h-2 bg-violet-400 animate-bounce" style={{ animationDelay: '300ms' }} />
-                <span className="w-1 h-3.5 bg-violet-400 animate-bounce" style={{ animationDelay: '450ms' }} />
-                {isSpeaking && (
-                  <button
-                    onClick={stopSpeaking}
-                    className="ml-2 px-1.5 py-0.5 rounded bg-violet-500 text-white text-[10px] flex items-center gap-1 hover:opacity-90"
-                  >
-                    <Square className="w-2.5 h-2.5 fill-current" /> Stop
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Quick Prompt Pills */}
-          <div className="p-2.5 border-b border-white/8 bg-white/[0.02] flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
-            <button
-              onClick={() => sendMessage("What is Ajay's tech stack and background?")}
-              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
-            >
-              ⚡ Tech Stack
-            </button>
-            <button
-              onClick={() => sendMessage("Tell me about the ElderNest project.")}
-              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
-            >
-              🏆 ElderNest
-            </button>
-            <button
-              onClick={() => sendMessage("What did Ajay do at BrikUp?")}
-              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
-            >
-              💼 BrikUp
-            </button>
-            <button
-              onClick={() => sendMessage("Is Ajay available for hiring or freelance projects?")}
-              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
-            >
-              🤝 Hire
-            </button>
-          </div>
-
-          {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs font-mono">
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {m.sender === 'assistant' && (
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                    <Bot className="w-3.5 h-3.5" />
-                  </div>
-                )}
-
-                <div className="flex flex-col gap-1 max-w-[84%]">
-                  <div
-                    className={`p-3 rounded-2xl leading-relaxed whitespace-pre-wrap ${
-                      m.sender === 'user'
-                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-br-none shadow-md'
-                        : 'bg-white/[0.07] text-neutral-200 rounded-bl-none border border-white/10'
-                    }`}
-                  >
-                    {m.text}
-                  </div>
-
-                  {/* Audio Listen / Replay button for Assistant Messages */}
-                  {m.sender === 'assistant' && (
-                    <div className="flex items-center gap-1.5 pl-1">
-                      <button
-                        onClick={() => {
-                          if (currentSpeakingId === m.id && isSpeaking) {
-                            stopSpeaking();
-                          } else {
-                            speakText(m.text, m.id);
-                          }
-                        }}
-                        className={`text-[10px] font-mono inline-flex items-center gap-1 px-2 py-0.5 rounded-full border transition-colors ${
-                          currentSpeakingId === m.id && isSpeaking
-                            ? 'bg-violet-600 text-white border-violet-500'
-                            : 'bg-white/[0.04] text-neutral-400 hover:text-white hover:border-violet-500 border-white/10'
-                        }`}
-                      >
-                        {currentSpeakingId === m.id && isSpeaking ? (
-                          <>
-                            <Square className="w-2.5 h-2.5 fill-current" />
-                            <span>Stop Voice</span>
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-2.5 h-2.5 fill-current" />
-                            <span>Listen (Male Voice)</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {m.sender === 'user' && (
-                  <div className="w-6 h-6 rounded-full bg-white/15 text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <User className="w-3.5 h-3.5" />
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex items-center gap-2 text-neutral-400 text-xs font-mono pl-8 py-1">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
-                <span>Thinking...</span>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input Bar */}
-          <div className="p-3 border-t border-white/10 bg-white/[0.02]">
-            <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
-              {/* Mic Button */}
-              {speechSupported && (
-                <button
-                  type="button"
-                  onClick={toggleListening}
-                  className={`p-2 rounded-full border transition-all ${
-                    isListening
-                      ? 'bg-rose-500 text-white border-rose-500 animate-pulse shadow-md'
-                      : 'bg-white/[0.06] text-neutral-400 hover:text-white hover:bg-white/[0.1] border-white/10'
-                  }`}
-                  title={isListening ? 'Stop listening' : 'Speak into microphone'}
-                >
-                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                </button>
-              )}
-
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={isListening ? 'Listening to voice...' : 'Ask about stack, projects, or voice chat...'}
-                disabled={isLoading}
-                className="flex-1 bg-white/[0.06] border border-white/10 rounded-full px-3.5 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-violet-500 transition-colors"
+          {/* ========================================================
+              MODE 1: VOICE AGENT (ANIMATED CIRCLE - NO TEXT)
+             ======================================================== */}
+          {activeMode === 'voice' ? (
+            <div className="flex-1 flex flex-col justify-between p-5 relative overflow-hidden select-none">
+              {/* Ambient Glow Atmosphere Behind Circle */}
+              <div 
+                aria-hidden="true" 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-to-tr from-violet-600/30 via-indigo-500/20 to-cyan-500/25 blur-3xl pointer-events-none transition-all duration-700" 
               />
 
-              <button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="p-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 disabled:opacity-40 transition-opacity shrink-0 shadow-md"
-                title="Send message"
-              >
-                <Send className="w-3.5 h-3.5" />
-              </button>
-            </form>
-          </div>
+              {/* Top Subtitle Status */}
+              <div className="relative z-10 text-center space-y-1 pt-1">
+                <span className="text-[11px] font-mono uppercase tracking-widest text-violet-300/80 block">
+                  AI Voice Agent
+                </span>
+                <p className="text-xs text-neutral-300 font-mono">
+                  {isListening 
+                    ? 'Listening... speak to Ajay’s AI' 
+                    : isLoading 
+                    ? 'Thinking...' 
+                    : isSpeaking 
+                    ? 'Speaking aloud (Male Voice)...' 
+                    : 'Tap the animated circle to speak'}
+                </p>
+              </div>
+
+              {/* Center Interactive Animated Responding Circle */}
+              <div className="relative z-10 flex flex-col items-center justify-center my-auto py-2">
+                {/* Expanding Concentric Ripple Rings when Active */}
+                {(isSpeaking || isListening) && (
+                  <>
+                    <div className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-violet-500/50 animate-voice-ripple-1 pointer-events-none" />
+                    <div className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-indigo-400/40 animate-voice-ripple-2 pointer-events-none" />
+                    <div className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-cyan-400/30 animate-voice-ripple-3 pointer-events-none" />
+                  </>
+                )}
+
+                {/* THE CORE ANIMATED CIRCLE */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isSpeaking) {
+                      stopSpeaking();
+                    } else {
+                      toggleListening();
+                    }
+                  }}
+                  className={`relative w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl focus:outline-none ${
+                    isListening
+                      ? 'bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-500 shadow-[0_0_70px_rgba(16,185,129,0.7)] animate-pulse scale-105'
+                      : isLoading
+                      ? 'bg-gradient-to-tr from-violet-600 via-fuchsia-500 to-indigo-600 shadow-[0_0_70px_rgba(168,85,247,0.7)] animate-voice-spin'
+                      : isSpeaking
+                      ? 'bg-gradient-to-tr from-violet-600 via-indigo-500 to-purple-500 shadow-[0_0_85px_rgba(168,85,247,0.85)] animate-voice-speaking scale-105'
+                      : 'bg-gradient-to-tr from-violet-700 via-indigo-600 to-purple-800 shadow-[0_0_50px_rgba(139,124,255,0.45)] animate-voice-breathe hover:scale-105 active:scale-95'
+                  }`}
+                  title={isSpeaking ? 'Tap to interrupt' : isListening ? 'Tap to stop listening' : 'Tap to speak'}
+                >
+                  {/* Glossy Glass Spherical Overlay */}
+                  <div className="absolute inset-2 rounded-full bg-white/[0.08] backdrop-blur-sm border border-white/25 flex items-center justify-center overflow-hidden">
+                    {/* Internal Light Glare */}
+                    <div className="absolute -top-7 -left-7 w-24 h-24 rounded-full bg-white/20 blur-md pointer-events-none" />
+                    
+                    {/* State Icon Inside Animated Circle */}
+                    {isListening ? (
+                      <div className="flex flex-col items-center gap-1.5 text-white">
+                        <Mic className="w-10 h-10 animate-bounce" />
+                        <span className="text-[11px] font-mono uppercase tracking-wider font-semibold">Listening</span>
+                      </div>
+                    ) : isLoading ? (
+                      <div className="flex flex-col items-center gap-1.5 text-white">
+                        <Loader2 className="w-10 h-10 animate-spin" />
+                        <span className="text-[11px] font-mono uppercase tracking-wider font-semibold">Thinking</span>
+                      </div>
+                    ) : isSpeaking ? (
+                      <div className="flex flex-col items-center gap-1.5 text-white">
+                        <Radio className="w-9 h-9 animate-pulse text-white" />
+                        {/* Dynamic Equalizer Bars inside Orb */}
+                        <div className="flex items-center gap-1 h-5 pt-0.5">
+                          <span className="w-1 bg-white rounded-full animate-bounce" style={{ height: '14px', animationDelay: '0ms' }} />
+                          <span className="w-1 bg-white rounded-full animate-bounce" style={{ height: '22px', animationDelay: '150ms' }} />
+                          <span className="w-1 bg-white rounded-full animate-bounce" style={{ height: '10px', animationDelay: '300ms' }} />
+                          <span className="w-1 bg-white rounded-full animate-bounce" style={{ height: '18px', animationDelay: '450ms' }} />
+                          <span className="w-1 bg-white rounded-full animate-bounce" style={{ height: '12px', animationDelay: '200ms' }} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-1.5 text-white/95">
+                        <Mic className="w-9 h-9 text-white drop-shadow" />
+                        <span className="text-[10px] font-mono tracking-wide opacity-80 uppercase">Tap Circle</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+
+                {/* Animated Soundwave Frequency Bars Underneath */}
+                <div className="flex items-center gap-1.5 mt-5 h-7">
+                  {[35, 70, 95, 55, 85, 90, 50, 75, 40].map((heightPct, idx) => (
+                    <span
+                      key={idx}
+                      className={`w-1 rounded-full transition-all duration-200 ${
+                        isSpeaking
+                          ? 'bg-gradient-to-t from-violet-500 to-indigo-400'
+                          : isListening
+                          ? 'bg-gradient-to-t from-emerald-400 to-teal-300'
+                          : 'bg-white/15'
+                      }`}
+                      style={{
+                        height: (isSpeaking || isListening) ? `${Math.max(6, heightPct * 0.28)}px` : '4px',
+                        animation: (isSpeaking || isListening) ? `wave-bounce 0.8s ease-in-out infinite ${(idx * 90)}ms` : 'none',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Section: Quick Topics & Control Dock */}
+              <div className="relative z-10 space-y-3 pt-1">
+                {/* One-Tap Voice Topic Pills */}
+                <div className="flex items-center justify-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
+                  <button
+                    onClick={() => sendMessage("What is Ajay's tech stack and background?")}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                  >
+                    ⚡ Tech Stack
+                  </button>
+                  <button
+                    onClick={() => sendMessage("Tell me about the ElderNest project.")}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                  >
+                    🏆 ElderNest
+                  </button>
+                  <button
+                    onClick={() => sendMessage("What did Ajay do at BrikUp?")}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                  >
+                    💼 BrikUp
+                  </button>
+                  <button
+                    onClick={() => sendMessage("Is Ajay available for hiring?")}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors active:scale-95"
+                  >
+                    🤝 Hire
+                  </button>
+                </div>
+
+                {/* Bottom Control Bar */}
+                <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                  <span className="text-[10px] font-mono text-neutral-400">
+                    Male Voice &bull; Voice Agent
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveMode('chat')}
+                    className="text-[11px] font-mono text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors"
+                  >
+                    <MessageSquare className="w-3 h-3" />
+                    <span>Switch to Text Chat</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* ========================================================
+                MODE 2: TEXT CHAT MODE
+               ======================================================== */
+            <>
+              {/* Quick Prompt Pills */}
+              <div className="p-2.5 border-b border-white/8 bg-white/[0.02] flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
+                <button
+                  onClick={() => sendMessage("What is Ajay's tech stack and background?")}
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                >
+                  ⚡ Tech Stack
+                </button>
+                <button
+                  onClick={() => sendMessage("Tell me about the ElderNest project.")}
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                >
+                  🏆 ElderNest
+                </button>
+                <button
+                  onClick={() => sendMessage("What did Ajay do at BrikUp?")}
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                >
+                  💼 BrikUp
+                </button>
+                <button
+                  onClick={() => sendMessage("Is Ajay available for hiring or freelance projects?")}
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+                >
+                  🤝 Hire
+                </button>
+              </div>
+
+              {/* Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs font-mono">
+                {messages.map((m) => (
+                  <div
+                    key={m.id}
+                    className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    {m.sender === 'assistant' && (
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <Bot className="w-3.5 h-3.5" />
+                      </div>
+                    )}
+
+                    <div className="flex flex-col gap-1 max-w-[84%]">
+                      <div
+                        className={`p-3 rounded-2xl leading-relaxed whitespace-pre-wrap ${
+                          m.sender === 'user'
+                            ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-br-none shadow-md'
+                            : 'bg-white/[0.07] text-neutral-200 rounded-bl-none border border-white/10'
+                        }`}
+                      >
+                        {m.text}
+                      </div>
+
+                      {/* Audio Listen / Replay button for Assistant Messages */}
+                      {m.sender === 'assistant' && (
+                        <div className="flex items-center gap-1.5 pl-1">
+                          <button
+                            onClick={() => {
+                              if (currentSpeakingId === m.id && isSpeaking) {
+                                stopSpeaking();
+                              } else {
+                                speakText(m.text, m.id);
+                              }
+                            }}
+                            className={`text-[10px] font-mono inline-flex items-center gap-1 px-2 py-0.5 rounded-full border transition-colors ${
+                              currentSpeakingId === m.id && isSpeaking
+                                ? 'bg-violet-600 text-white border-violet-500'
+                                : 'bg-white/[0.04] text-neutral-400 hover:text-white hover:border-violet-500 border-white/10'
+                            }`}
+                          >
+                            {currentSpeakingId === m.id && isSpeaking ? (
+                              <>
+                                <Square className="w-2.5 h-2.5 fill-current" />
+                                <span>Stop Voice</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-2.5 h-2.5 fill-current" />
+                                <span>Listen (Male Voice)</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {m.sender === 'user' && (
+                      <div className="w-6 h-6 rounded-full bg-white/15 text-white flex items-center justify-center shrink-0 mt-0.5">
+                        <User className="w-3.5 h-3.5" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {isLoading && (
+                  <div className="flex items-center gap-2 text-neutral-400 text-xs font-mono pl-8 py-1">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
+                    <span>Thinking...</span>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input Bar */}
+              <div className="p-3 border-t border-white/10 bg-white/[0.02]">
+                <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
+                  {/* Mic Button: Clicking opens Voice Agent circle mode! */}
+                  {speechSupported && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveMode('voice');
+                        toggleListening();
+                      }}
+                      className="p-2 rounded-full border bg-white/[0.06] text-neutral-400 hover:text-white hover:bg-white/[0.1] border-white/10 transition-all"
+                      title="Open Voice Agent (Animated Circle)"
+                    >
+                      <Mic className="w-4 h-4 text-violet-400" />
+                    </button>
+                  )}
+
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask about stack, projects, or voice chat..."
+                    disabled={isLoading}
+                    className="flex-1 bg-white/[0.06] border border-white/10 rounded-full px-3.5 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-violet-500 transition-colors"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="p-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 disabled:opacity-40 transition-opacity shrink-0 shadow-md"
+                    title="Send message"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+              </div>
+            </>
+          )}
         </div>
       )}
     </>

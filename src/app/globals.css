@@ -125,3 +125,84 @@ textarea:focus-visible {
   background-color: var(--color-accent);
   color: #0E0E12;
 }
+
+/* Voice Agent Circle & Orb Keyframe Animations */
+@keyframes voice-orb-breathe {
+  0%, 100% {
+    transform: scale(0.97);
+    filter: drop-shadow(0 0 25px rgba(139, 124, 255, 0.35));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 45px rgba(139, 124, 255, 0.65));
+  }
+}
+
+@keyframes voice-orb-speaking {
+  0% {
+    transform: scale(0.95);
+    filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.6));
+  }
+  25% {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 60px rgba(99, 102, 241, 0.8));
+  }
+  50% {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 45px rgba(168, 85, 247, 0.7));
+  }
+  75% {
+    transform: scale(1.16);
+    filter: drop-shadow(0 0 70px rgba(56, 189, 248, 0.85));
+  }
+  100% {
+    transform: scale(0.95);
+    filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.6));
+  }
+}
+
+@keyframes voice-ripple {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+@keyframes voice-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes wave-bounce {
+  0%, 100% { height: 6px; }
+  50% { height: 28px; }
+}
+
+.animate-voice-breathe {
+  animation: voice-orb-breathe 4s ease-in-out infinite;
+}
+
+.animate-voice-speaking {
+  animation: voice-orb-speaking 1.2s ease-in-out infinite;
+}
+
+.animate-voice-spin {
+  animation: voice-rotate 8s linear infinite;
+}
+
+.animate-voice-ripple-1 {
+  animation: voice-ripple 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-voice-ripple-2 {
+  animation: voice-ripple 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite 0.8s;
+}
+
+.animate-voice-ripple-3 {
+  animation: voice-ripple 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite 1.6s;
+}
+
