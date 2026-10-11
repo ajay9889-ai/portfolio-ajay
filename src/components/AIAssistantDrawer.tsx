@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  X, Send, Bot, User, Sparkles, Mic, MicOff, Volume2, VolumeX, Loader2, Radio 
+  X, Send, Bot, User, Sparkles, Mic, MicOff, Volume2, VolumeX, Loader2, Radio, Play, Square, AlertCircle, MessageSquare
 } from 'lucide-react';
 
 interface ChatMessage {
+  id: string;
   sender: 'assistant' | 'user';
   text: string;
 }
@@ -14,96 +15,137 @@ export function AIAssistantDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorNotice, setErrorNotice] = useState<string | null>(null);
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
+      id: 'welcome',
       sender: 'assistant',
-      text: "Hello! I am Ajay's AI Voice & Chat Assistant powered by Gemini. You can chat with me or speak directly using voice chat to learn about Ajay's technical stack, projects, internship at BrikUp, or hire availability.",
+      text: "Hello! I am Ajay's AI Voice & Chat Assistant. Feel free to speak or type any questions about Ajay's full-stack tech stack, his BrikUp internship, award-winning projects (ElderNest, WisdomPlay), or hiring availability.",
     },
   ]);
 
-  // Voice Chat States
+  // Voice Chat & TTS States
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [speechSupported, setSpeechSupported] = useState(false);
+
+  // Available Voices
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  // Check Web Speech API support
+  // Load and filter male voices
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        setSpeechSupported(true);
-      }
+    if (typeof window === 'undefined') return;
+
+    // Check Speech Recognition support
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      setSpeechSupported(true);
     }
+
+    // Load available browser TTS voices
+    const updateVoices = () => {
+      if (!window.speechSynthesis) return;
+      const allVoices = window.speechSynthesis.getVoices();
+      if (!allVoices.length) return;
+
+      setVoices(allVoices);
+
+      // Prioritize male English voices
+      const maleNames = ['george', 'ravi', 'david', 'mark', 'guy', 'daniel', 'alex', 'oliver', 'rishi', 'male'];
+      const femaleNames = ['hazel', 'zira', 'susan', 'heera', 'eva', 'catherina', 'linda', 'female', 'girl'];
+
+      const maleVoice = allVoices.find((v) => {
+        const lower = v.name.toLowerCase();
+        const isFemale = femaleNames.some((f) => lower.includes(f));
+        const isMale = maleNames.some((m) => lower.includes(m));
+        return !isFemale && isMale && v.lang.startsWith('en');
+      }) || allVoices.find((v) => {
+        const lower = v.name.toLowerCase();
+        return !femaleNames.some((f) => lower.includes(f)) && v.lang.startsWith('en');
+      }) || allVoices[0];
+
+      if (maleVoice) {
+        setSelectedVoice(maleVoice);
+      }
+    };
+
+    updateVoices();
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = updateVoices;
+    }
+
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, []);
 
-  // Auto-scroll chat
+  // Auto-scroll chat to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  // Find best natural Male Voice
-  const getMaleVoice = (): SpeechSynthesisVoice | null => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return null;
-    const voices = window.speechSynthesis.getVoices();
-    if (!voices.length) return null;
-
-    // Preference list for top-quality natural male English voices
-    const maleVoiceNames = [
-      'guy', 'david', 'mark', 'george', 'daniel', 'alex', 'oliver', 'rishi', 'male'
-    ];
-
-    // 1. Search for English male voices by name keyword
-    for (const name of maleVoiceNames) {
-      const match = voices.find(
-        (v) => v.lang.startsWith('en') && v.name.toLowerCase().includes(name)
-      );
-      if (match) return match;
-    }
-
-    // 2. Fallback to any English voice
-    const enVoice = voices.find((v) => v.lang.startsWith('en'));
-    return enVoice || voices[0] || null;
-  };
-
-  // Speak AI response with Male Voice
-  const speakText = (text: string) => {
+  // Speak AI response with chosen Male Voice
+  const speakText = (text: string, messageId?: string) => {
     if (!voiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
 
-    window.speechSynthesis.cancel(); // Stop any ongoing speech
+    window.speechSynthesis.cancel(); // Stop current speech
 
-    const cleanText = text.replace(/[*_#`]/g, '').trim();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
+    // Clean markdown symbols for natural human speech
+    const spokenText = text
+      .replace(/[*_#`~]/g, '')
+      .replace(/https?:\/\/\S+/g, '')
+      .trim();
 
-    const voice = getMaleVoice();
-    if (voice) {
-      utterance.voice = voice;
+    const utterance = new SpeechSynthesisUtterance(spokenText);
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
     }
 
-    utterance.pitch = 0.95; // Confident, deep masculine pitch
-    utterance.rate = 1.0;   // Natural conversational cadence
+    utterance.pitch = 0.95; // Confident male resonance
+    utterance.rate = 1.0;   // Conversational speed
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      if (messageId) setCurrentSpeakingId(messageId);
+    };
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      setCurrentSpeakingId(null);
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      setCurrentSpeakingId(null);
+    };
 
     window.speechSynthesis.speak(utterance);
   };
 
-  // Stop speech synthesis
+  // Stop speech
   const stopSpeaking = () => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
+      setCurrentSpeakingId(null);
     }
   };
 
-  // Start / Stop Microphone Listening
+  // Start / Stop Microphone Voice Input
   const toggleListening = () => {
+    setErrorNotice(null);
+
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
@@ -116,7 +158,7 @@ export function AIAssistantDrawer() {
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser. Please try Chrome or Edge.');
+      setErrorNotice('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
       return;
     }
 
@@ -128,18 +170,25 @@ export function AIAssistantDrawer() {
 
       recognition.onstart = () => {
         setIsListening(true);
+        setErrorNotice(null);
       };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+        const transcript = event.results?.[0]?.[0]?.transcript;
         if (transcript) {
           sendMessage(transcript);
         }
       };
 
       recognition.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
         setIsListening(false);
+        if (event.error === 'not-allowed') {
+          setErrorNotice('Microphone access denied. Please allow microphone in browser bar.');
+        } else if (event.error === 'no-speech') {
+          setErrorNotice('No speech detected. Please tap mic and speak again.');
+        } else {
+          setErrorNotice(`Microphone error: ${event.error}`);
+        }
       };
 
       recognition.onend = () => {
@@ -148,24 +197,30 @@ export function AIAssistantDrawer() {
 
       recognitionRef.current = recognition;
       recognition.start();
-    } catch (err) {
-      console.error('Failed to start speech recognition:', err);
+    } catch (err: any) {
       setIsListening(false);
+      setErrorNotice('Could not start microphone. Check your browser settings.');
     }
   };
 
-  // Send message to Gemini /api/chat
+  // Send message to backend /api/chat
   const sendMessage = async (textToSend: string) => {
     const trimmed = textToSend.trim();
     if (!trimmed || isLoading) return;
 
-    const userMessage: ChatMessage = { sender: 'user', text: trimmed };
-    const updatedMessages = [...messages, userMessage];
+    setErrorNotice(null);
+    stopSpeaking();
 
-    setMessages(updatedMessages);
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      sender: 'user',
+      text: trimmed,
+    };
+
+    const previousHistory = [...messages];
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-    stopSpeaking();
 
     try {
       const res = await fetch('/api/chat', {
@@ -173,24 +228,37 @@ export function AIAssistantDrawer() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: trimmed,
-          history: updatedMessages,
+          history: previousHistory,
         }),
       });
 
       if (!res.ok) {
-        throw new Error('API response failed');
+        throw new Error(`Chat API error`);
       }
 
       const data = await res.json();
-      const reply = data.reply || "I'm Ajay's portfolio AI. How can I assist you with Ajay's work today?";
+      const reply = data.reply || "Ajay A is a full-stack developer in Bengaluru specializing in React, Next.js, and AI systems. Feel free to connect at ajayhasrb123@gmail.com!";
 
-      setMessages((prev) => [...prev, { sender: 'assistant', text: reply }]);
-      speakText(reply);
-    } catch (err) {
-      console.error('Error fetching chat response:', err);
-      const fallback = "Ajay A is a full-stack developer in Bengaluru specializing in React, Next.js, and scalable APIs. You can reach him directly at ajayhasrb123@gmail.com!";
-      setMessages((prev) => [...prev, { sender: 'assistant', text: fallback }]);
-      speakText(fallback);
+      const assistantMsgId = `assistant-${Date.now()}`;
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantMsgId, sender: 'assistant', text: reply },
+      ]);
+
+      if (voiceEnabled) {
+        speakText(reply, assistantMsgId);
+      }
+    } catch (err: any) {
+      console.error('Error in chat request:', err);
+      const fallbackId = `err-${Date.now()}`;
+      const fallback = "Ajay A is a full-stack developer in Bengaluru specializing in React, Next.js, and scalable APIs. Feel free to connect at ajayhasrb123@gmail.com!";
+      setMessages((prev) => [
+        ...prev,
+        { id: fallbackId, sender: 'assistant', text: fallback },
+      ]);
+      if (voiceEnabled) {
+        speakText(fallback, fallbackId);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -201,209 +269,285 @@ export function AIAssistantDrawer() {
     sendMessage(input);
   };
 
-  const handleQuickPrompt = (prompt: string) => {
-    sendMessage(prompt);
-  };
+  // Filter available English male voices
+  const availableMaleVoices = voices.filter((v) => {
+    const lower = v.name.toLowerCase();
+    const femaleNames = ['hazel', 'zira', 'susan', 'heera', 'eva', 'catherina', 'linda', 'female', 'girl'];
+    return !femaleNames.some((f) => lower.includes(f)) && v.lang.startsWith('en');
+  });
 
   return (
     <>
-      {/* Floating Trigger Button */}
+      {/* 1. Floating AI Assistant Trigger Button (Bottom Right) */}
       <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 sm:right-28 z-40 px-3.5 py-2 rounded-full border border-line bg-bg/90 backdrop-blur-xl text-xs font-mono text-muted hover:text-ink shadow-md flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
-        title="Ask Ajay's AI Assistant"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xl shadow-indigo-500/25 flex items-center gap-2.5 text-xs font-mono transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20"
+        title="Open Ajay's Floating AI Assistant"
       >
-        <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" />
-        <span className="hidden sm:inline">Ask AI & Voice</span>
+        <div className="relative">
+          <Sparkles className="w-4 h-4 text-white animate-pulse" />
+          {isSpeaking && (
+            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          )}
+        </div>
+        <span className="font-medium tracking-wide">
+          {isOpen ? 'Close Assistant' : 'AI Assistant'}
+        </span>
+        <span className="w-2 h-2 rounded-full bg-emerald-400" />
       </button>
 
-      {/* Drawer Overlay */}
+      {/* 2. Floating AI Assistant Popover Card */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-bg border-l border-line h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
-            {/* Header */}
-            <div className="p-4 border-b border-line flex items-center justify-between bg-bg/80 backdrop-blur-md">
-              <div className="flex items-center gap-2.5">
-                <div className="relative w-8 h-8 rounded-full bg-accent/15 border border-accent/30 text-accent flex items-center justify-center">
-                  <Bot className="w-4 h-4" />
-                  {isSpeaking && (
-                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-accent animate-ping" />
-                  )}
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-display font-bold text-sm text-ink">Ajay's AI Assistant</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-accent/10 text-accent border border-accent/20">
-                      Gemini Voice
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-mono text-muted block">
-                    {isSpeaking ? 'Speaking in AI male voice...' : isListening ? 'Listening to your voice...' : 'Online • Ask anything'}
+        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[550px] max-h-[82vh] rounded-3xl bg-[#121218]/95 dark:bg-[#0D0D12]/95 border border-white/12 shadow-[0_25px_70px_rgba(0,0,0,0.55)] backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          {/* Card Header */}
+          <div className="p-4 border-b border-white/10 bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shadow-inner">
+                <Bot className="w-4 h-4" />
+                {isSpeaking && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                )}
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-display font-bold text-sm text-white">Ajay's Assistant</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                    Live
                   </span>
                 </div>
+                {/* Male Voice Selector */}
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="text-[10px] font-mono text-neutral-400">Voice:</span>
+                  <select
+                    value={selectedVoice?.name || ''}
+                    onChange={(e) => {
+                      const match = voices.find((v) => v.name === e.target.value);
+                      if (match) setSelectedVoice(match);
+                    }}
+                    className="bg-transparent text-[10px] font-mono text-violet-400 border-b border-violet-500/30 focus:outline-none cursor-pointer max-w-[130px] truncate"
+                  >
+                    {availableMaleVoices.length > 0 ? (
+                      availableMaleVoices.map((v) => (
+                        <option key={v.name} value={v.name} className="bg-[#181822] text-neutral-200 text-xs">
+                          {v.name.replace('Microsoft ', '').replace(' Desktop', '')} (Male)
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" className="bg-[#181822] text-neutral-200">Natural Male Voice</option>
+                    )}
+                  </select>
+                </div>
               </div>
+            </div>
 
+            <div className="flex items-center gap-1">
+              {/* Mute / Unmute Voice Toggle */}
+              <button
+                onClick={() => {
+                  if (isSpeaking) stopSpeaking();
+                  setVoiceEnabled(!voiceEnabled);
+                }}
+                className={`p-1.5 rounded-full border transition-colors ${
+                  voiceEnabled 
+                    ? 'border-violet-500/40 text-violet-300 bg-violet-500/15' 
+                    : 'border-white/10 text-neutral-400 hover:text-white'
+                }`}
+                title={voiceEnabled ? 'Mute AI voice' : 'Enable AI voice'}
+              >
+                {voiceEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              </button>
+
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  stopSpeaking();
+                  setIsOpen(false);
+                }}
+                className="text-neutral-400 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Error Notice */}
+          {errorNotice && (
+            <div className="bg-rose-500/15 border-b border-rose-500/30 px-3.5 py-2 flex items-center justify-between text-xs font-mono text-rose-300">
               <div className="flex items-center gap-1.5">
-                {/* Voice Audio Toggle */}
-                <button
-                  onClick={() => {
-                    if (isSpeaking) stopSpeaking();
-                    setVoiceEnabled(!voiceEnabled);
-                  }}
-                  className={`p-1.5 rounded-full border transition-colors ${
-                    voiceEnabled 
-                      ? 'border-accent/30 text-accent bg-accent/10' 
-                      : 'border-line text-muted hover:text-ink'
-                  }`}
-                  title={voiceEnabled ? 'Mute AI voice' : 'Enable AI voice'}
-                >
-                  {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-                </button>
-
-                {/* Close Drawer */}
-                <button
-                  onClick={() => {
-                    stopSpeaking();
-                    setIsOpen(false);
-                  }}
-                  className="text-muted hover:text-ink p-1.5 rounded-full hover:bg-line/30 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span className="leading-tight text-[11px]">{errorNotice}</span>
               </div>
-            </div>
-
-            {/* Voice Wave Visualizer Banner when Speaking or Listening */}
-            {(isSpeaking || isListening) && (
-              <div className="bg-accent/10 border-b border-accent/20 px-4 py-2 flex items-center justify-between text-xs font-mono text-accent">
-                <div className="flex items-center gap-2">
-                  <Radio className="w-3.5 h-3.5 animate-pulse" />
-                  <span>{isListening ? 'Listening... Speak now' : 'AI speaking...'}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-1 h-3 bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1 h-5 bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1 h-2 bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
-                  <span className="w-1 h-4 bg-accent animate-bounce" style={{ animationDelay: '450ms' }} />
-                  {isSpeaking && (
-                    <button
-                      onClick={stopSpeaking}
-                      className="ml-2 text-[10px] underline hover:opacity-80"
-                    >
-                      Stop
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Quick Prompt Suggestions */}
-            <div className="p-3 border-b border-line bg-line/10 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
-              <button
-                onClick={() => handleQuickPrompt("What is Ajay's background & stack?")}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-bg border border-line text-muted hover:text-accent hover:border-accent transition-colors"
-              >
-                ⚡ Ajay's Stack
-              </button>
-              <button
-                onClick={() => handleQuickPrompt("Tell me about the ElderNest Hackathon project.")}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-bg border border-line text-muted hover:text-accent hover:border-accent transition-colors"
-              >
-                🏆 ElderNest (1st Place)
-              </button>
-              <button
-                onClick={() => handleQuickPrompt("What did Ajay do at BrikUp?")}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-bg border border-line text-muted hover:text-accent hover:border-accent transition-colors"
-              >
-                💼 BrikUp Internship
-              </button>
-              <button
-                onClick={() => handleQuickPrompt("Is Ajay available for hiring or freelance projects?")}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-bg border border-line text-muted hover:text-accent hover:border-accent transition-colors"
-              >
-                🤝 Hire Availability
+              <button onClick={() => setErrorNotice(null)} className="p-0.5 hover:opacity-80">
+                <X className="w-3 h-3" />
               </button>
             </div>
+          )}
 
-            {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">
-              {messages.map((m, i) => (
-                <div
-                  key={i}
-                  className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  {m.sender === 'assistant' && (
-                    <div className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center shrink-0 mt-0.5">
-                      <Bot className="w-3.5 h-3.5" />
-                    </div>
-                  )}
+          {/* Voice Wave Visualizer when Speaking or Listening */}
+          {(isSpeaking || isListening) && (
+            <div className="bg-violet-500/15 border-b border-violet-500/30 px-3.5 py-1.5 flex items-center justify-between text-xs font-mono text-violet-300">
+              <div className="flex items-center gap-2">
+                <Radio className="w-3 h-3 animate-pulse" />
+                <span className="text-[11px]">{isListening ? 'Listening to voice...' : 'Speaking aloud...'}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-1 h-2.5 bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1 h-4 bg-violet-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1 h-2 bg-violet-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="w-1 h-3.5 bg-violet-400 animate-bounce" style={{ animationDelay: '450ms' }} />
+                {isSpeaking && (
+                  <button
+                    onClick={stopSpeaking}
+                    className="ml-2 px-1.5 py-0.5 rounded bg-violet-500 text-white text-[10px] flex items-center gap-1 hover:opacity-90"
+                  >
+                    <Square className="w-2.5 h-2.5 fill-current" /> Stop
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
+          {/* Quick Prompt Pills */}
+          <div className="p-2.5 border-b border-white/8 bg-white/[0.02] flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-mono">
+            <button
+              onClick={() => sendMessage("What is Ajay's tech stack and background?")}
+              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+            >
+              ⚡ Tech Stack
+            </button>
+            <button
+              onClick={() => sendMessage("Tell me about the ElderNest project.")}
+              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+            >
+              🏆 ElderNest
+            </button>
+            <button
+              onClick={() => sendMessage("What did Ajay do at BrikUp?")}
+              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+            >
+              💼 BrikUp
+            </button>
+            <button
+              onClick={() => sendMessage("Is Ajay available for hiring or freelance projects?")}
+              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-neutral-300 hover:text-white hover:border-violet-500 transition-colors"
+            >
+              🤝 Hire
+            </button>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs font-mono">
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`flex items-start gap-2.5 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                {m.sender === 'assistant' && (
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                    <Bot className="w-3.5 h-3.5" />
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1 max-w-[84%]">
                   <div
-                    className={`p-3.5 rounded-2xl max-w-[82%] leading-relaxed ${
+                    className={`p-3 rounded-2xl leading-relaxed whitespace-pre-wrap ${
                       m.sender === 'user'
-                        ? 'bg-accent text-white rounded-br-none shadow-sm'
-                        : 'bg-line/40 text-ink rounded-bl-none border border-line/60'
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-br-none shadow-md'
+                        : 'bg-white/[0.07] text-neutral-200 rounded-bl-none border border-white/10'
                     }`}
                   >
                     {m.text}
                   </div>
 
-                  {m.sender === 'user' && (
-                    <div className="w-6 h-6 rounded-full bg-ink/10 text-ink flex items-center justify-center shrink-0 mt-0.5">
-                      <User className="w-3.5 h-3.5" />
+                  {/* Audio Listen / Replay button for Assistant Messages */}
+                  {m.sender === 'assistant' && (
+                    <div className="flex items-center gap-1.5 pl-1">
+                      <button
+                        onClick={() => {
+                          if (currentSpeakingId === m.id && isSpeaking) {
+                            stopSpeaking();
+                          } else {
+                            speakText(m.text, m.id);
+                          }
+                        }}
+                        className={`text-[10px] font-mono inline-flex items-center gap-1 px-2 py-0.5 rounded-full border transition-colors ${
+                          currentSpeakingId === m.id && isSpeaking
+                            ? 'bg-violet-600 text-white border-violet-500'
+                            : 'bg-white/[0.04] text-neutral-400 hover:text-white hover:border-violet-500 border-white/10'
+                        }`}
+                      >
+                        {currentSpeakingId === m.id && isSpeaking ? (
+                          <>
+                            <Square className="w-2.5 h-2.5 fill-current" />
+                            <span>Stop Voice</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-2.5 h-2.5 fill-current" />
+                            <span>Listen (Male Voice)</span>
+                          </>
+                        )}
+                      </button>
                     </div>
                   )}
                 </div>
-              ))}
 
-              {isLoading && (
-                <div className="flex items-center gap-2 text-muted text-xs font-mono pl-8">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-accent" />
-                  <span>Thinking with Gemini...</span>
-                </div>
+                {m.sender === 'user' && (
+                  <div className="w-6 h-6 rounded-full bg-white/15 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <User className="w-3.5 h-3.5" />
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {isLoading && (
+              <div className="flex items-center gap-2 text-neutral-400 text-xs font-mono pl-8 py-1">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
+                <span>Thinking...</span>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Bar */}
+          <div className="p-3 border-t border-white/10 bg-white/[0.02]">
+            <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
+              {/* Mic Button */}
+              {speechSupported && (
+                <button
+                  type="button"
+                  onClick={toggleListening}
+                  className={`p-2 rounded-full border transition-all ${
+                    isListening
+                      ? 'bg-rose-500 text-white border-rose-500 animate-pulse shadow-md'
+                      : 'bg-white/[0.06] text-neutral-400 hover:text-white hover:bg-white/[0.1] border-white/10'
+                  }`}
+                  title={isListening ? 'Stop listening' : 'Speak into microphone'}
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
               )}
 
-              <div ref={messagesEndRef} />
-            </div>
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={isListening ? 'Listening to voice...' : 'Ask about stack, projects, or voice chat...'}
+                disabled={isLoading}
+                className="flex-1 bg-white/[0.06] border border-white/10 rounded-full px-3.5 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-violet-500 transition-colors"
+              />
 
-            {/* Input Bar with Voice Mic */}
-            <div className="p-3 border-t border-line bg-bg">
-              <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
-                {/* Voice Mic Button */}
-                {speechSupported && (
-                  <button
-                    type="button"
-                    onClick={toggleListening}
-                    className={`p-2.5 rounded-full border transition-all ${
-                      isListening
-                        ? 'bg-red-500 text-white border-red-500 animate-pulse shadow-md'
-                        : 'bg-line/30 text-muted hover:text-ink hover:bg-line/50 border-line'
-                    }`}
-                    title={isListening ? 'Stop listening' : 'Speak to AI'}
-                  >
-                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                  </button>
-                )}
-
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={isListening ? 'Listening to voice...' : 'Type or use mic to talk...'}
-                  disabled={isLoading}
-                  className="flex-1 bg-line/20 border border-line rounded-full px-4 py-2.5 text-xs text-ink placeholder-muted/50 focus:outline-none focus:border-accent transition-colors"
-                />
-
-                <button
-                  type="submit"
-                  disabled={isLoading || !input.trim()}
-                  className="p-2.5 rounded-full bg-accent text-white hover:opacity-90 disabled:opacity-40 transition-opacity shrink-0 shadow-sm"
-                  title="Send message"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
-            </div>
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="p-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 disabled:opacity-40 transition-opacity shrink-0 shadow-md"
+                title="Send message"
+              >
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </form>
           </div>
         </div>
       )}

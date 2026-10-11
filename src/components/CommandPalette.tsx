@@ -80,7 +80,7 @@ export function CommandPalette() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 px-3.5 py-2 rounded-full border border-line bg-bg/90 backdrop-blur-xl text-xs font-mono text-muted hover:text-ink shadow-md flex items-center gap-2"
+        className="fixed bottom-6 right-36 z-40 hidden sm:flex px-3.5 py-2 rounded-full border border-line bg-bg/90 backdrop-blur-xl text-xs font-mono text-muted hover:text-ink shadow-md items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
         title="Open Command Palette (Ctrl+K or /)"
       >
         <Search className="w-3.5 h-3.5 text-accent" />
