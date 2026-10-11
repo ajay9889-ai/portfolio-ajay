@@ -32,6 +32,8 @@ export function AIAssistantDrawer() {
   const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [speechSupported, setSpeechSupported] = useState(false);
+  const [liveTranscript, setLiveTranscript] = useState('');
+  const [lastSpokenQuery, setLastSpokenQuery] = useState('');
 
   // Available Voices
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -39,6 +41,20 @@ export function AIAssistantDrawer() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  // Phonetic corrections for technical terms in voice speech
+  const normalizeVoiceTranscript = (raw: string): string => {
+    let text = raw.trim();
+    text = text
+      .replace(/\b(elder\s*nest|older\s*nest|alder\s*nest)\b/gi, 'ElderNest')
+      .replace(/\b(wisdom\s*play)\b/gi, 'WisdomPlay')
+      .replace(/\b(brick\s*up|break\s*up|bric\s*up|brickup)\b/gi, 'BrikUp')
+      .replace(/\b(hack\s*verse|hackers\s*2025)\b/gi, 'HackVerse')
+      .replace(/\b(bms\s*it|bmsit\s*m)\b/gi, 'BMSIT')
+      .replace(/\b(smart\s*attendance|rfid\s*attendance)\b/gi, 'Smart Attendance')
+      .replace(/\b(r\s*j|a\s*j)\b/gi, 'Ajay');
+    return text;
+  };
 
   // Load and filter Indian English voices
   useEffect(() => {
@@ -125,9 +141,12 @@ export function AIAssistantDrawer() {
 
     // Clean markdown/emoji/URLs for natural spoken delivery
     const spokenText = text
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
       .replace(/[*_#`~]/g, '')
       .replace(/https?:\/\/\S+/g, '')
-      .replace(/🏆|👋|🙌|📬|💬|✅|❌|⚠️/g, '')
+      .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
       .replace(/•/g, ',')
       .trim();
 
@@ -171,13 +190,14 @@ export function AIAssistantDrawer() {
     }
   };
 
-  // Start / Stop Microphone Voice Input
+  // Start / Stop Microphone Voice Input with multi-chunk accuracy
   const toggleListening = () => {
     setErrorNotice(null);
 
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
+      setLiveTranscript('');
       return;
     }
 
@@ -196,42 +216,72 @@ export function AIAssistantDrawer() {
       recognition.continuous = false;
       recognition.interimResults = true;  // Show interim results for responsiveness
       recognition.lang = 'en-IN';          // Indian English — understands Indian accent
+      recognition.maxAlternatives = 1;
+
+      let accumulatedFinal = '';
 
       recognition.onstart = () => {
         setIsListening(true);
+        setLiveTranscript('');
         setErrorNotice(null);
       };
 
       recognition.onresult = (event: any) => {
-        // Only process final results, not interim (partial) ones
-        const result = event.results?.[0];
-        if (result?.isFinal) {
-          const transcript = result?.[0]?.transcript?.trim();
-          if (transcript) {
-            sendMessage(transcript);
+        let interimChunk = '';
+
+        for (let i = 0; i < event.results.length; ++i) {
+          const item = event.results[i];
+          if (item.isFinal) {
+            accumulatedFinal = item[0].transcript;
+          } else {
+            interimChunk += item[0].transcript;
           }
+        }
+
+        const displayText = (accumulatedFinal || interimChunk).trim();
+        if (displayText) {
+          setLiveTranscript(displayText);
+        }
+
+        if (accumulatedFinal.trim()) {
+          const cleaned = normalizeVoiceTranscript(accumulatedFinal.trim());
+          setLastSpokenQuery(cleaned);
+          setLiveTranscript('');
+          setIsListening(false);
+          try {
+            recognition.stop();
+          } catch {}
+          sendMessage(cleaned);
         }
       };
 
       recognition.onerror = (event: any) => {
         setIsListening(false);
+        setLiveTranscript('');
         if (event.error === 'not-allowed') {
           setErrorNotice('Microphone access denied. Please allow microphone in browser.');
         } else if (event.error === 'no-speech') {
           setErrorNotice('No speech detected. Tap the animated circle to speak again.');
         } else {
-          setErrorNotice(`Microphone error: ${event.error}`);
+          setErrorNotice(`Microphone: ${event.error}`);
         }
       };
 
       recognition.onend = () => {
         setIsListening(false);
+        if (accumulatedFinal.trim()) {
+          const cleaned = normalizeVoiceTranscript(accumulatedFinal.trim());
+          setLastSpokenQuery(cleaned);
+          setLiveTranscript('');
+          sendMessage(cleaned);
+        }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err: any) {
       setIsListening(false);
+      setLiveTranscript('');
       setErrorNotice('Could not start microphone. Check your browser permissions.');
     }
   };
@@ -242,6 +292,8 @@ export function AIAssistantDrawer() {
     if (!trimmed || isLoading) return;
 
     setErrorNotice(null);
+    setLiveTranscript('');
+    setLastSpokenQuery(trimmed);
     stopSpeaking();
 
     const userMessage: ChatMessage = {
@@ -565,6 +617,44 @@ export function AIAssistantDrawer() {
                       }}
                     />
                   ))}
+                </div>
+
+                {/* Real-Time Speech & Spoken Response Subtitle Badge */}
+                <div className="w-full max-w-[340px] min-h-[50px] mt-2.5 px-3.5 py-1.5 rounded-2xl bg-line/25 dark:bg-white/[0.04] border border-line dark:border-white/10 flex flex-col items-center justify-center text-center transition-all shadow-sm">
+                  {liveTranscript ? (
+                    <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-600 dark:text-emerald-400 animate-pulse">
+                      <Mic className="w-3.5 h-3.5 shrink-0" />
+                      <span className="italic truncate">&ldquo;{liveTranscript}&rdquo;</span>
+                    </div>
+                  ) : isSpeaking || isLoading ? (
+                    <div className="space-y-0.5">
+                      {lastSpokenQuery && (
+                        <p className="text-[10px] font-mono text-muted dark:text-neutral-400 line-clamp-1">
+                          You: &ldquo;{lastSpokenQuery}&rdquo;
+                        </p>
+                      )}
+                      <p className="text-xs font-mono text-ink dark:text-neutral-200 line-clamp-2 leading-relaxed">
+                        {messages[messages.length - 1]?.sender === 'assistant'
+                          ? messages[messages.length - 1].text
+                          : 'Synthesizing voice response...'}
+                      </p>
+                    </div>
+                  ) : lastSpokenQuery ? (
+                    <div className="space-y-0.5">
+                      <p className="text-[10px] font-mono text-muted dark:text-neutral-400 line-clamp-1">
+                        Asked: &ldquo;{lastSpokenQuery}&rdquo;
+                      </p>
+                      <p className="text-xs font-mono text-ink dark:text-neutral-200 line-clamp-2 leading-relaxed">
+                        {messages[messages.length - 1]?.sender === 'assistant'
+                          ? messages[messages.length - 1].text
+                          : 'Tap circle to speak again'}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] font-mono text-muted dark:text-neutral-400">
+                      Tap circle to speak aloud or select a topic below
+                    </p>
+                  )}
                 </div>
               </div>
 
