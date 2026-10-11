@@ -2,32 +2,22 @@
 
 import React from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { PROFILE } from '@/data/portfolioData';
-
-const OrbitCanvas = dynamic(
-  () => import('./OrbitCanvas').then((mod) => mod.OrbitCanvas),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-[400px] flex items-center justify-center text-xs font-mono text-muted">
-        Initializing 3D Orbit engine...
-      </div>
-    ),
-  }
-);
+import { HeroPortrait } from './HeroPortrait';
 
 export function HeroSection() {
   return (
-    <section className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-between px-6 sm:px-10 max-w-7xl mx-auto py-4 sm:py-8 overflow-hidden">
+    <section className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-between px-6 sm:px-10 max-w-7xl mx-auto py-3 sm:py-6 overflow-hidden">
       {/* Top Status & Persona Filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-muted pt-2 hairline-b pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-muted pt-1 hairline-b pb-3">
         <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-ink font-medium">Ajay A</span>
           <span>•</span>
-          <span>Bengaluru, India (UTC+05:30)</span>
+          <span className="text-emerald-400 font-medium">Available for Freelancing</span>
+          <span className="hidden md:inline">•</span>
+          <span className="hidden md:inline">Bengaluru, India</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -53,35 +43,38 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Main Hero Split: Left Editorial Typography + Right 3D Orbit Canvas */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center my-auto py-6">
-        {/* Left Column: Heading, Subtext, CTAs */}
-        <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10">
-          <div className="space-y-1">
-            <span className="text-xs uppercase tracking-widest text-accent font-mono block">
-              Full-Stack Developer
-            </span>
-            <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.04em] text-ink leading-[0.92]">
-              Full-stack
-              <br />
-              developer.
-            </h1>
+      {/* Main Hero: Text ABOVE -> Big Image BELOW */}
+      <div className="flex flex-col items-center text-center my-auto pt-4 sm:pt-6 w-full">
+        {/* 1. ABOVE: Status, Name, Title, Subtext & Action Buttons */}
+        <div className="space-y-3 sm:space-y-4 flex flex-col items-center max-w-3xl z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Available for Freelancing &amp; Projects</span>
           </div>
 
-          <p className="text-lg sm:text-xl text-muted font-normal max-w-xl leading-relaxed">
+          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.04em] text-ink leading-[0.92]">
+            Ajay A
+          </h1>
+
+          <p className="font-mono text-xs sm:text-sm uppercase tracking-widest text-accent font-medium">
+            Full-Stack Developer &bull; AI Systems
+          </p>
+
+          <p className="text-base sm:text-xl text-muted font-normal max-w-xl leading-relaxed">
             {PROFILE.subtext}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-1 pb-2">
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-accent text-white font-medium text-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-accent text-white font-medium text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
             >
               Let's talk
             </Link>
             <Link
               href="#work"
-              className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink transition-colors px-4 py-2"
             >
               <span>view selected work</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -89,16 +82,16 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Right Column: 3D Living Orbit Object (Right of center, prominent & glowing) */}
-        <div className="lg:col-span-5 w-full flex items-center justify-center relative">
-          <OrbitCanvas />
+        {/* 2. BELOW: Big, Screen-Fit Interactive Portrait */}
+        <div className="w-full flex justify-center -mt-2 sm:-mt-4">
+          <HeroPortrait />
         </div>
       </div>
 
       {/* Bottom Hero Bar: Scroll Hint */}
-      <div className="flex items-center justify-between text-xs text-muted font-mono hairline-t pt-4">
+      <div className="flex items-center justify-between text-xs text-muted font-mono hairline-t pt-3">
         <span className="text-[11px] text-muted/60">
-          Living 3D Orbit • Drag to inspect
+          Move cursor over portrait to reveal color
         </span>
 
         <Link
