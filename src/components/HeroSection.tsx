@@ -8,7 +8,7 @@ import { HeroPortrait } from './HeroPortrait';
 
 export function HeroSection() {
   return (
-    <section className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-between px-6 sm:px-10 max-w-7xl mx-auto py-3 sm:py-6 overflow-hidden">
+    <section className="relative w-full min-h-[calc(100vh-5rem)] flex flex-col justify-between px-6 sm:px-10 max-w-7xl mx-auto py-3 sm:py-5 overflow-hidden">
       {/* Top Status & Persona Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-muted pt-1 hairline-b pb-3">
         <div className="flex items-center gap-2.5">
@@ -43,16 +43,21 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Main Hero: Text ABOVE -> Big Image BELOW */}
-      <div className="flex flex-col items-center text-center my-auto pt-4 sm:pt-6 w-full">
-        {/* 1. ABOVE: Status, Name, Title, Subtext & Action Buttons */}
-        <div className="space-y-3 sm:space-y-4 flex flex-col items-center max-w-3xl z-10">
+      {/* Main Hero: Image TOP -> Text BOTTOM */}
+      <div className="flex flex-col items-center text-center my-auto py-2 sm:py-3 w-full">
+        {/* 1. TOP: Enlarged Portrait (Cropped at bottom to fit the screen) */}
+        <div className="w-full flex justify-center mb-2 sm:mb-4">
+          <HeroPortrait />
+        </div>
+
+        {/* 2. BOTTOM: Status Badge, Name, Title, Subtext & Action Buttons */}
+        <div className="space-y-2.5 sm:space-y-3.5 flex flex-col items-center max-w-3xl z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Available for Freelancing &amp; Projects</span>
           </div>
 
-          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.04em] text-ink leading-[0.92]">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-[-0.04em] text-ink leading-[0.92]">
             Ajay A
           </h1>
 
@@ -60,15 +65,15 @@ export function HeroSection() {
             Full-Stack Developer &bull; AI Systems
           </p>
 
-          <p className="text-base sm:text-xl text-muted font-normal max-w-xl leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-muted font-normal max-w-xl leading-relaxed">
             {PROFILE.subtext}
           </p>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-1 pb-2">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-1">
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-accent text-white font-medium text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+              className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-accent text-white font-medium text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
             >
               Let's talk
             </Link>
@@ -80,11 +85,6 @@ export function HeroSection() {
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
-        </div>
-
-        {/* 2. BELOW: Big, Screen-Fit Interactive Portrait */}
-        <div className="w-full flex justify-center -mt-2 sm:-mt-4">
-          <HeroPortrait />
         </div>
       </div>
 
