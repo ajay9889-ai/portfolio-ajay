@@ -5,10 +5,10 @@ import { MarqueeBand } from '@/components/MarqueeBand';
 import { AboutSection } from '@/components/AboutSection';
 import { SkillsSection } from '@/components/SkillsSection';
 import { WorkSection } from '@/components/WorkSection';
+import { LiveProjectsSection } from '@/components/LiveProjectsSection';
 import { ExperienceSection } from '@/components/ExperienceSection';
 import { ContactSection } from '@/components/ContactSection';
 import { CommandPalette } from '@/components/CommandPalette';
-import { AIAssistantDrawer } from '@/components/AIAssistantDrawer';
 import { Footer } from '@/components/Footer';
 
 export default function HomePage() {
@@ -22,11 +22,11 @@ export default function HomePage() {
         <AboutSection />
         <SkillsSection />
         <WorkSection />
+        <LiveProjectsSection />
         <ExperienceSection />
         <ContactSection />
       </main>
       <CommandPalette />
-      <AIAssistantDrawer />
       <Footer />
     </div>
   );

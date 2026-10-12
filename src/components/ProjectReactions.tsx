@@ -25,11 +25,15 @@ export function ProjectReactions({ slug, compact = false }: ProjectReactionsProp
     if (saved) setUserReacted(saved);
 
     // Fetch live reaction counts
-    fetch(`/api/reactions?slug=${slug}`)
+    fetch(`/api/reactions?slug=${encodeURIComponent(slug)}`)
       .then((r) => r.json())
       .then((data) => {
-        if (data.success && data.reactions) {
-          setCounts(data.reactions);
+        if (data.success && data.reactions && typeof data.reactions === 'object') {
+          // Guard: verify that all values in reactions are numbers
+          const isValidFlat = Object.values(data.reactions).every((v) => typeof v === 'number');
+          if (isValidFlat) {
+            setCounts(data.reactions as Record<string, number>);
+          }
         }
       })
       .catch(() => {});
@@ -45,7 +49,7 @@ export function ProjectReactions({ slug, compact = false }: ProjectReactionsProp
     // Optimistic UI update
     setCounts((prev) => ({
       ...prev,
-      [emoji]: (prev[emoji] || 0) + (userReacted === emoji ? 0 : 1),
+      [emoji]: (typeof prev[emoji] === 'number' ? prev[emoji] : 0) + (userReacted === emoji ? 0 : 1),
     }));
     setUserReacted(emoji);
     localStorage.setItem(`reacted-${slug}`, emoji);
@@ -61,9 +65,13 @@ export function ProjectReactions({ slug, compact = false }: ProjectReactionsProp
     }
   };
 
+  const validEntries = Object.entries(counts).filter(
+    ([emoji, count]) => typeof count === 'number' && typeof emoji === 'string'
+  );
+
   return (
     <div className={`flex items-center gap-2 select-none ${compact ? 'py-1' : 'py-3'}`}>
-      {Object.entries(counts).map(([emoji, count]) => {
+      {validEntries.map(([emoji, count]) => {
         const isSelected = userReacted === emoji;
         const isBouncing = animatingEmoji === emoji;
 

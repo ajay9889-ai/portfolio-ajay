@@ -11,7 +11,10 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get("slug");
 
-  if (slug && reactionsStore[slug]) {
+  if (slug) {
+    if (!reactionsStore[slug]) {
+      reactionsStore[slug] = { "🔥": 14, "🚀": 22, "💡": 11, "❤️": 18 };
+    }
     return NextResponse.json({ success: true, reactions: reactionsStore[slug] });
   }
 

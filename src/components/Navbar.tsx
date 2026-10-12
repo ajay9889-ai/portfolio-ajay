@@ -32,6 +32,7 @@ export function Navbar() {
     { label: 'Skills', href: '#skills' },
     { label: 'Experience', href: '#experience' },
     { label: 'Projects', href: '#work' },
+    { label: 'Live', href: '#live-projects' },
     { label: 'Contact', href: '#contact' },
   ];
 

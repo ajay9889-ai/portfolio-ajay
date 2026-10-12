@@ -51,6 +51,20 @@ export function WorkSection() {
                 {/* One-tap live reactions */}
                 <ProjectReactions slug={project.slug} compact />
 
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Launch ${project.title} live demo`}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Live Demo</span>
+                    <ArrowUpRight className="w-3 h-3" />
+                  </a>
+                )}
+
                 <div className="hidden lg:flex items-center gap-2">
                   {project.technologies.slice(0, 3).map((tech) => (
                     <span key={tech} className="px-2 py-0.5 border border-line rounded">

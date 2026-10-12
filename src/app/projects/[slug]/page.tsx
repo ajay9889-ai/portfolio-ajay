@@ -58,6 +58,33 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             {project.tagline}
           </p>
 
+          {/* Action CTAs */}
+          <div className="flex items-center gap-3 pt-1 flex-wrap">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-accent to-[#FF9028] hover:brightness-110 active:scale-95 transition-all shadow-md shadow-orange-500/20"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Launch Live App</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium border border-line/80 dark:border-white/10 hover:border-accent hover:text-accent text-muted transition-all"
+              >
+                <span>GitHub Repo</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+
           {/* Quick facts + Reactions unified strip */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 pt-4 hairline-t text-xs font-mono items-center">
             <div>

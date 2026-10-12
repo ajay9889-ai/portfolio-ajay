@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { AssistantProvider } from "@/context/AssistantContext";
+import { AssistantWidget } from "@/components/assistant/AssistantWidget";
 
 export const metadata: Metadata = {
   title: "Ajay A - Full-stack developer",
@@ -48,7 +50,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-bg text-ink antialiased">
-        {children}
+        <AssistantProvider>
+          {children}
+          <AssistantWidget />
+        </AssistantProvider>
       </body>
     </html>
   );

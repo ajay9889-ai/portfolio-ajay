@@ -21,6 +21,24 @@ export interface Project {
   screenshots?: string[];
 }
 
+export interface LiveProject {
+  id: string;
+  title: string;
+  slug: string;
+  badge?: string;
+  category: string;
+  tagline: string;
+  description: string;
+  technologies: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+  displayUrl?: string;
+  accentColor?: string;
+  gradient: string;
+  status: 'live' | 'active' | 'deploying';
+  featuredMetric?: { label: string; value: string };
+}
+
 export interface SkillGroup {
   name: string;
   items: string[];
@@ -48,6 +66,9 @@ export interface ProfileData {
   email: string;
   githubUrl: string;
   linkedinUrl: string;
+  instagramUrl?: string;
+  instagramHandle?: string;
+  instagramQrCode?: string;
 }
 
 export interface ContactSubmissionPayload {

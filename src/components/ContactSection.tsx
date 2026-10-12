@@ -1,8 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowUpRight, CheckCircle, AlertCircle, Send, Copy, Check, Sparkles } from 'lucide-react';
+import { ArrowUpRight, CheckCircle, AlertCircle, Send, Copy, Check, Sparkles, Maximize2, X, ExternalLink } from 'lucide-react';
 import { PROFILE } from '@/data/portfolioData';
+
+function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 
 export function ContactSection() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -10,6 +20,7 @@ export function ContactSection() {
   const [errorMessage, setErrorMessage] = useState('');
   const [copied, setCopied] = useState(false);
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   const topics = [
     { label: 'Say hello 👋', text: "Hi Ajay, I came across your portfolio and wanted to connect!" },
@@ -113,7 +124,7 @@ export function ContactSection() {
               </button>
             </div>
 
-            <div className="pt-2 flex items-center gap-6">
+            <div className="pt-2 flex items-center gap-6 flex-wrap">
               <a
                 href={PROFILE.githubUrl}
                 target="_blank"
@@ -132,7 +143,69 @@ export function ContactSection() {
                 <span>LinkedIn</span>
                 <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
+              {PROFILE.instagramUrl && (
+                <a
+                  href={PROFILE.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-accent transition-colors group"
+                >
+                  <InstagramIcon className="w-3.5 h-3.5 text-pink-500" />
+                  <span>Instagram</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </a>
+              )}
             </div>
+
+            {/* Instagram QR Card */}
+            {PROFILE.instagramQrCode && (
+              <div className="mt-6 p-4 rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-[#121218]/80 border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] flex items-center gap-4 max-w-sm">
+                <div 
+                  onClick={() => setShowQrModal(true)}
+                  className="relative w-20 h-20 rounded-xl overflow-hidden bg-white p-1 shrink-0 border border-black/10 dark:border-white/10 shadow-sm cursor-pointer group/qr"
+                  title="Click to view full Instagram QR Code"
+                >
+                  <img
+                    src={PROFILE.instagramQrCode}
+                    alt="Instagram QR Code"
+                    className="w-full h-full object-contain group-hover/qr:scale-105 transition-transform"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/qr:opacity-100 flex items-center justify-center transition-opacity text-white">
+                    <Maximize2 className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+                    <InstagramIcon className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+                    <span>Instagram Profile</span>
+                  </div>
+                  <p className="text-[11px] font-mono text-muted">
+                    {PROFILE.instagramHandle}
+                  </p>
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setShowQrModal(true)}
+                      className="text-[11px] font-mono text-accent hover:underline flex items-center gap-0.5"
+                    >
+                      <span>Scan QR</span>
+                      <Maximize2 className="w-2.5 h-2.5" />
+                    </button>
+                    <span className="text-muted/40">•</span>
+                    <a
+                      href={PROFILE.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-mono text-muted hover:text-ink hover:underline flex items-center gap-0.5"
+                    >
+                      <span>Open Link</span>
+                      <ArrowUpRight className="w-2.5 h-2.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -275,6 +348,65 @@ export function ContactSection() {
           )}
         </div>
       </div>
+
+      {/* Instagram QR Full-Screen Modal */}
+      {showQrModal && PROFILE.instagramQrCode && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setShowQrModal(false)}
+        >
+          <div 
+            className="relative max-w-sm w-full p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16161D] border border-black/10 dark:border-white/10 shadow-2xl text-center space-y-5 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setShowQrModal(false)}
+              className="absolute top-4 right-4 p-2 rounded-full text-neutral-400 hover:text-ink hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              title="Close QR Modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="space-y-1 pt-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/10 text-pink-500 text-xs font-mono font-medium">
+                <InstagramIcon className="w-3.5 h-3.5" />
+                <span>Instagram QR</span>
+              </div>
+              <h3 className="font-display text-2xl font-bold text-ink">
+                Scan to Connect
+              </h3>
+              <p className="text-xs font-mono text-muted">
+                {PROFILE.instagramHandle}
+              </p>
+            </div>
+
+            {/* QR Image Frame */}
+            <div className="p-3 rounded-2xl bg-white border border-neutral-200 shadow-inner max-w-[260px] mx-auto">
+              <img
+                src={PROFILE.instagramQrCode}
+                alt="Instagram QR Code"
+                className="w-full h-auto rounded-xl object-contain mx-auto"
+              />
+            </div>
+
+            {/* Modal Action CTA */}
+            <div className="pt-2">
+              <a
+                href={PROFILE.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-4 rounded-xl font-medium text-xs sm:text-sm text-white bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-pink-500/25"
+              >
+                <span>Open in Instagram</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

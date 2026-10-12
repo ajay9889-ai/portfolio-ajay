@@ -28,6 +28,16 @@ export function Footer() {
           >
             LinkedIn
           </a>
+          {PROFILE.instagramUrl && (
+            <a
+              href={PROFILE.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-accent transition-colors"
+            >
+              Instagram
+            </a>
+          )}
           <Link
             href="/admin"
             className="hover:text-accent transition-colors flex items-center gap-1 opacity-60 hover:opacity-100"
