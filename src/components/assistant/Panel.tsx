@@ -17,6 +17,7 @@ import { AvailabilityBadge } from './AvailabilityBadge';
 import { ChatView } from './ChatView';
 import { VoiceView } from './VoiceView';
 import { SettingsPanel } from './SettingsPanel';
+import { AIAssistantLogo } from './AIAssistantLogo';
 
 export const Panel: React.FC = () => {
   const {
@@ -70,7 +71,7 @@ export const Panel: React.FC = () => {
       <header className="px-4 py-3 flex items-center justify-between border-b border-white/40 dark:border-white/10 shrink-0 backdrop-blur-md bg-white/40 dark:bg-white/[0.03]">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--color-accent,#FF7A00)] to-[#FFA742] text-white shadow-sm shrink-0">
-            <Sparkles className="w-4 h-4" />
+            <AIAssistantLogo className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
