@@ -3,6 +3,11 @@ import path from 'path';
 
 import os from 'os';
 
+import defaultContacts from '@/data/admin/contacts.json';
+import defaultExperience from '@/data/admin/experience.json';
+import defaultProfile from '@/data/admin/profile.json';
+import defaultProjects from '@/data/admin/projects.json';
+
 const BUNDLED_DIR = path.join(process.cwd(), 'src/data/admin');
 const TMP_DIR = path.join(os.tmpdir(), 'portfolio-admin');
 
@@ -15,52 +20,66 @@ try {
   // non-blocking
 }
 
-function getFilePath(filename: string, forWrite: boolean = false): string {
-  const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
-  const tmpPath = path.join(TMP_DIR, filename);
-  const bundledPath = path.join(BUNDLED_DIR, filename);
-
-  if (isServerless) {
-    if (forWrite) return tmpPath;
-    if (fs.existsSync(tmpPath)) return tmpPath;
-    return bundledPath;
-  }
-
-  // Local environment: write directly to project files so git tracks changes
-  return forWrite ? bundledPath : (fs.existsSync(bundledPath) ? bundledPath : tmpPath);
-}
+const DEFAULT_MAP: Record<string, unknown> = {
+  'contacts.json': defaultContacts,
+  'experience.json': defaultExperience,
+  'profile.json': defaultProfile,
+  'projects.json': defaultProjects,
+};
 
 function readJson<T>(filename: string): T {
-  const filePath = getFilePath(filename, false);
+  // 1. Try reading from serverless TMP_DIR (if modified during lambda session)
   try {
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw) as T;
+    const tmpPath = path.join(TMP_DIR, filename);
+    if (fs.existsSync(tmpPath)) {
+      const raw = fs.readFileSync(tmpPath, 'utf-8');
+      return JSON.parse(raw) as T;
+    }
   } catch {
-    const fallbackPath = path.join(BUNDLED_DIR, filename);
-    const raw = fs.readFileSync(fallbackPath, 'utf-8');
-    return JSON.parse(raw) as T;
+    // non-blocking fallback
   }
+
+  // 2. Try reading from project filesystem (local dev)
+  try {
+    const bundledPath = path.join(BUNDLED_DIR, filename);
+    if (fs.existsSync(bundledPath)) {
+      const raw = fs.readFileSync(bundledPath, 'utf-8');
+      return JSON.parse(raw) as T;
+    }
+  } catch {
+    // non-blocking fallback
+  }
+
+  // 3. Fallback to bundled compiled in-memory JSON (100% crash-proof on Vercel)
+  if (filename in DEFAULT_MAP) {
+    return JSON.parse(JSON.stringify(DEFAULT_MAP[filename])) as T;
+  }
+
+  return {} as T;
 }
 
 function writeJson(filename: string, data: unknown): void {
-  const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
   const content = JSON.stringify(data, null, 2);
 
-  if (isServerless) {
+  // 1. Always attempt write to TMP_DIR
+  try {
+    if (!fs.existsSync(TMP_DIR)) {
+      fs.mkdirSync(TMP_DIR, { recursive: true });
+    }
     const tmpPath = path.join(TMP_DIR, filename);
     fs.writeFileSync(tmpPath, content, 'utf-8');
-    return;
+  } catch (err) {
+    console.warn('[adminData] Failed to write to TMP_DIR:', err);
   }
 
-  try {
-    const bundledPath = path.join(BUNDLED_DIR, filename);
-    fs.writeFileSync(bundledPath, content, 'utf-8');
-  } catch (err: any) {
-    if (err?.code === 'EROFS') {
-      const tmpPath = path.join(TMP_DIR, filename);
-      fs.writeFileSync(tmpPath, content, 'utf-8');
-    } else {
-      throw err;
+  // 2. In local dev, also write to bundled project path so git tracks edits
+  const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+  if (!isServerless) {
+    try {
+      const bundledPath = path.join(BUNDLED_DIR, filename);
+      fs.writeFileSync(bundledPath, content, 'utf-8');
+    } catch {
+      // non-blocking
     }
   }
 }
