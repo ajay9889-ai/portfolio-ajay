@@ -5,17 +5,17 @@ import Link from 'next/link';
 import { Sun, Moon, Menu, X, ArrowUpRight } from 'lucide-react';
 
 export function Navbar() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>('light');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('portfolio-theme') as 'dark' | 'light' | null;
-    if (saved) {
+    const saved = (localStorage.getItem('portfolio-theme') || localStorage.getItem('theme')) as 'dark' | 'light' | null;
+    if (saved === 'dark' || saved === 'light') {
       setTheme(saved);
       document.documentElement.setAttribute('data-theme', saved);
     } else {
-      setTheme('dark');
-      document.documentElement.setAttribute('data-theme', 'dark');
+      setTheme('light');
+      document.documentElement.setAttribute('data-theme', 'light');
     }
   }, []);
 
@@ -23,6 +23,7 @@ export function Navbar() {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
     localStorage.setItem('portfolio-theme', next);
+    localStorage.setItem('theme', next);
     document.documentElement.setAttribute('data-theme', next);
   };
 

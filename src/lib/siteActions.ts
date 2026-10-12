@@ -95,7 +95,10 @@ function changeTheme(mode: string): boolean {
   const target = (mode ?? '').toLowerCase();
   if (target === 'dark' || target === 'light') {
     document.documentElement.setAttribute('data-theme', target);
-    try { localStorage.setItem('theme', target); } catch {}
+    try {
+      localStorage.setItem('portfolio-theme', target);
+      localStorage.setItem('theme', target);
+    } catch {}
     return true;
   }
   return false;

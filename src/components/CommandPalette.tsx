@@ -60,6 +60,8 @@ export function CommandPalette() {
         const current = document.documentElement.getAttribute('data-theme') || 'light';
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('portfolio-theme', next);
+        localStorage.setItem('theme', next);
         localStorage.setItem('orbit-theme', next);
       },
       icon: Moon,

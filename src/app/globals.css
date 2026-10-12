@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  /* Default: Dark Obsidian Theme with Radiant Solar Orange Accent */
-  --color-bg: #0E0E12;
-  --color-ink: #ECEBE7;
-  --color-text: #ECEBE7;
-  --color-muted: #8B8B95;
-  --color-line: rgba(236, 235, 231, 0.09);
-  --color-accent: #FF7A00;
-  --color-accent-glow: rgba(255, 122, 0, 0.35);
+  /* Default: Crisp Editorial Light Theme */
+  --color-bg: #F5F4F0;
+  --color-ink: #121216;
+  --color-text: #121216;
+  --color-muted: #6B6A75;
+  --color-line: rgba(18, 18, 22, 0.08);
+  --color-accent: #F95700;
+  --color-accent-glow: rgba(249, 87, 0, 0.25);
 }
 
 [data-theme="light"] {
