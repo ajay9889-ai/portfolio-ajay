@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mic } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useAssistantContext } from '@/context/AssistantContext';
 import { AIAssistantLogo } from './AIAssistantLogo';
 
@@ -171,16 +171,11 @@ export const Launcher: React.FC = () => {
           </div>
 
           {/* Live Online Emerald Beacon Badge (Top-Right) */}
-          <div className="absolute top-1.5 right-1.5 z-20 flex items-center justify-center">
-            <span className="relative flex h-3 w-3">
+          <div className="absolute top-2 right-2 z-20 flex items-center justify-center">
+            <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white/90 shadow-sm" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-white/90 shadow-sm" />
             </span>
-          </div>
-
-          {/* Micro Voice/Chat Cue Indicator (Bottom-Right) */}
-          <div className="absolute bottom-1 right-2 z-20 opacity-80 group-hover:opacity-100 transition-opacity">
-            <Mic className="w-2.5 h-2.5 text-white/90 drop-shadow" />
           </div>
 
           {/* Keyboard shortcut tooltip on hover */}
