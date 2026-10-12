@@ -5,6 +5,7 @@ import { Copy, Check, ThumbsUp, ThumbsDown, RotateCcw, Volume2, Sparkles } from 
 import type { Message } from '@/hooks/useAssistant';
 import { LeadForm } from './LeadForm';
 import { useAssistantContext } from '@/context/AssistantContext';
+import { AIAssistantLogo } from './AIAssistantLogo';
 
 interface MessageBubbleProps {
   message: Message;
@@ -48,6 +49,11 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     );
   }
 
+  // Never render ghost empty bubbles that are not streaming
+  if (!isUser && !message.text && !message.streaming) {
+    return null;
+  }
+
   return (
     <div
       className={`group flex flex-col gap-1 w-full my-2.5 ${
@@ -57,7 +63,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       <div className="flex items-end gap-2 max-w-[85%]">
         {!isUser && (
           <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mb-1 bg-gradient-to-tr from-[var(--color-accent,#FF7A00)] to-[#FFA742] text-white shadow-sm">
-            <Sparkles className="w-3 h-3" />
+            <AIAssistantLogo className="w-3.5 h-3.5 text-white" compact />
           </div>
         )}
 
@@ -68,13 +74,24 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               : 'backdrop-blur-xl bg-white/70 dark:bg-white/[0.06] text-neutral-800 dark:text-neutral-100 rounded-bl-sm border border-white/50 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.4)]'
           }`}
         >
-          {/* Main message text */}
-          <div className="whitespace-pre-wrap break-words">
-            {message.text}
-            {message.streaming && (
-              <span className="inline-block w-1.5 h-3.5 ml-1 bg-[var(--color-accent,#FF7A00)] animate-pulse align-middle" />
-            )}
-          </div>
+          {/* Main message text or typing animation */}
+          {message.text ? (
+            <div className="whitespace-pre-wrap break-words">
+              {message.text}
+              {message.streaming && (
+                <span className="inline-flex items-center ml-1 align-middle">
+                  <span className="inline-block w-1.5 h-3.5 bg-[var(--color-accent,#FF7A00)] rounded-full animate-pulse shadow-[0_0_8px_var(--color-accent,#FF7A00)]" />
+                </span>
+              )}
+            </div>
+          ) : message.streaming ? (
+            /* Animated Typing Indicator Dots */
+            <div className="flex items-center gap-1.5 py-1 px-0.5">
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent,#FF7A00)] animate-typing-dot-1" />
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent,#FF7A00)] animate-typing-dot-2" />
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent,#FF7A00)] animate-typing-dot-3" />
+            </div>
+          ) : null}
 
           {/* If the message triggered the contact form action */}
           {!isUser &&

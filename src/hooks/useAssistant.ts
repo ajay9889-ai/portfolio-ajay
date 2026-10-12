@@ -119,7 +119,10 @@ function loadSavedMessages(): Message[] {
     if (!raw) return [WELCOME_MESSAGE];
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed.map((m: any) => ({ ...m, streaming: false }));
+      const valid = parsed
+        .filter((m: any) => m && typeof m.text === 'string' && m.text.trim().length > 0)
+        .map((m: any) => ({ ...m, streaming: false }));
+      return valid.length > 0 ? valid : [WELCOME_MESSAGE];
     }
     return [WELCOME_MESSAGE];
   } catch {
@@ -130,7 +133,10 @@ function loadSavedMessages(): Message[] {
 function persistSavedMessages(msgs: Message[]): void {
   if (typeof window === 'undefined') return;
   try {
-    const clean = msgs.slice(-40).map((m) => ({ ...m, streaming: false }));
+    const clean = msgs
+      .slice(-40)
+      .filter((m) => m && typeof m.text === 'string' && m.text.trim().length > 0)
+      .map((m) => ({ ...m, streaming: false }));
     localStorage.setItem('assistant-messages', JSON.stringify(clean));
   } catch {}
 }

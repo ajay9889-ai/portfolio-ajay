@@ -6,6 +6,7 @@ import { useAssistantContext } from '@/context/AssistantContext';
 import type { Message } from '@/hooks/useAssistant';
 import { MessageBubble } from './MessageBubble';
 import { SuggestionChips } from './SuggestionChips';
+import { AIAssistantLogo } from './AIAssistantLogo';
 
 export const ChatView: React.FC = () => {
   const {
@@ -122,13 +123,19 @@ export const ChatView: React.FC = () => {
           />
         ))}
 
-        {/* Thinking Indicator */}
-        {mode === 'thinking' && (
-          <div className="flex items-center gap-2 my-2 text-xs text-neutral-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent,#FF7A00)] animate-bounce" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent,#FF7A00)] animate-bounce [animation-delay:0.2s]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent,#FF7A00)] animate-bounce [animation-delay:0.4s]" />
-            <span className="ml-1 text-[11px]">Thinking...</span>
+        {/* Animated Typing Indicator when thinking and no active placeholder */}
+        {mode === 'thinking' && !messages.some((m: Message) => m.streaming) && (
+          <div className="flex items-end gap-2 max-w-[85%] my-2.5">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mb-1 bg-gradient-to-tr from-[var(--color-accent,#FF7A00)] to-[#FFA742] text-white shadow-sm">
+              <AIAssistantLogo className="w-3.5 h-3.5 text-white" compact />
+            </div>
+            <div className="px-4 py-2.5 rounded-2xl rounded-bl-sm backdrop-blur-xl bg-white/70 dark:bg-white/[0.06] border border-white/50 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+              <div className="flex items-center gap-1.5 py-1 px-0.5">
+                <span className="w-2 h-2 rounded-full bg-[var(--color-accent,#FF7A00)] animate-typing-dot-1" />
+                <span className="w-2 h-2 rounded-full bg-[var(--color-accent,#FF7A00)] animate-typing-dot-2" />
+                <span className="w-2 h-2 rounded-full bg-[var(--color-accent,#FF7A00)] animate-typing-dot-3" />
+              </div>
+            </div>
           </div>
         )}
       </div>
